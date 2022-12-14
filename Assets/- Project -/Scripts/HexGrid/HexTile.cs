@@ -7,6 +7,8 @@ public class HexTile : MonoBehaviour
 {
     #region Editable Variables
 	[SerializeField] private TextMeshPro textMeshPro; // Text to show Grid Coordinate
+	[SerializeField] private Sprite hexSprite; // Sprite for HexTile when not selected
+	[SerializeField] private Sprite hexSpriteSelected; // Sprite for HexTile when selected
 	#endregion
 	
 	
@@ -14,6 +16,22 @@ public class HexTile : MonoBehaviour
 	private GameObject hexTileObject; // GameObject that was instantiated by HexGrid 
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
 	private Vector2 hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
+	private SpriteRenderer spriteRenderer; // Store sprite renderer for qwuick changeing.
+	#endregion
+	
+	
+    #region Lifecycle Methods
+	private void Start() 
+	{
+		spriteRenderer = GetComponent<SpriteRenderer>();
+	}
+	
+	private void Update() 
+	{
+		// Check if this tile is the selected instance
+		spriteRenderer.sprite = GameController.Instance.GetSelectedHex() == this ? hexSpriteSelected : hexSprite;
+
+	}
 	#endregion
 	
 	
