@@ -30,7 +30,6 @@ public class HexTile : MonoBehaviour
 	{
 		// Check if this tile is the selected instance
 		spriteRenderer.sprite = GameController.Instance.GetSelectedHex() == this ? hexSpriteSelected : hexSprite;
-
 	}
 	#endregion
 	

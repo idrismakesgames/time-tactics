@@ -35,14 +35,6 @@ public class HexGrid : MonoBehaviour
 		// Generate the HexGrid
 		GenerateHexGrid();
 	}
-    
-	private void Update() 
-	{
-		// Get mouse position on grid and set selected hex tile
-		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2Int gridPosition = GetGridPositionFromWorld(mousePosition);
-		GameController.Instance.SetSelectedHex(isMousOffGrid(gridPosition) ? null :hexTileArray[gridPosition.x, gridPosition.y]);
-	}
     #endregion
     
     
@@ -68,7 +60,7 @@ public class HexGrid : MonoBehaviour
 		}
 	}   
 	
-	private Vector3 GetWorldPositionFromGrid(int x, int y)  
+	public Vector3 GetWorldPositionFromGrid(int x, int y)  
 	{
 		// Set the position of the tile based on Grid Coordinate. (Using calculated gaps)
 		float xPosition = x * widthGap;
@@ -81,7 +73,7 @@ public class HexGrid : MonoBehaviour
 		return new Vector3(xPosition, yPosition, 0);
 	}
 	
-	private Vector2Int GetGridPositionFromWorld(Vector3 worldPos)  
+	public Vector2Int GetGridPositionFromWorld(Vector3 worldPos)  
 	{
 		// Create Vector2 for Grid Coordinates, Get Y Coordinate
 		Vector2Int gridPosition = new Vector2Int(0,0);
@@ -98,14 +90,11 @@ public class HexGrid : MonoBehaviour
 		List<Vector2Int> neighbourList = new List<Vector2Int> 
 		{
 			// Neighbours left and right
-			gridPosition + new Vector2Int(-1, 0),
-			gridPosition + new Vector2Int(+1, 0),
+			gridPosition + new Vector2Int(-1, 0), gridPosition + new Vector2Int(+1, 0),
 			// Neighbours above
-			gridPosition + new Vector2Int(oddRow ? +1 : -1, +1),
-			gridPosition + new Vector2Int(+0, +1),
+			gridPosition + new Vector2Int(oddRow ? +1 : -1, +1), gridPosition + new Vector2Int(+0, +1),
 			// Neighbours below
-			gridPosition + new Vector2Int(oddRow ? +1 : -1, -1),
-			gridPosition + new Vector2Int(+0, -1),
+			gridPosition + new Vector2Int(oddRow ? +1 : -1, -1), gridPosition + new Vector2Int(+0, -1),
 		};
 		
 		// Check distance is lowest to ensure correct grid position is set
@@ -122,10 +111,18 @@ public class HexGrid : MonoBehaviour
 		return gridPosition;
 	}
     #endregion
-    
+  
+  
+	#region Accessor Methods
+	public HexTile GetHexTileAtPosition(int x, int y)  
+	{
+		return hexTileArray[x, y];
+	}
+	#endregion
+  
     
     #region Helper Methods
-	private bool isMousOffGrid(Vector2Int gridPosition)  
+	public bool IsMousOffGrid(Vector2Int gridPosition)  
 	{
 		// Safety check the x and y to not allow less than 0 or more than Max
 		if (gridPosition.x < 0) return true;
