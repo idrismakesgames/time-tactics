@@ -382,6 +382,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1502573816}
   - component: {fileID: 1502573817}
+  - component: {fileID: 1502573818}
   m_Layer: 0
   m_Name: Hex Grid
   m_TagString: Untagged
@@ -421,3 +422,15 @@ MonoBehaviour:
   heightOffset: -0.034
   rowLength: 30
   colHeight: 20
+--- !u!114 &1502573818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502573815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30c53fa8cf34af64aa91165a4954c740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

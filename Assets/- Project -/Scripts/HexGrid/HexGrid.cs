@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class HexGrid : MonoBehaviour
 {
-    #region Editable Variables
+	public static HexGrid Instance { get; private set; } // Singleton to allow HexGrid access gamewide
+	
+    #region HexGrid Editable Vars
 	[SerializeField] private HexTile hexTileObject;
 	[SerializeField] private float widthOffset; // Row spacing for hex
 	[SerializeField] private float heightOffset; // Column spacing for hex
@@ -13,19 +15,26 @@ public class HexGrid : MonoBehaviour
 	#endregion
 	
 	
-    #region Private Variables
-	private Sprite hexTileSprite;
+    #region HexGrid Private Vars
+	private HexGridMethods hexGridMethods; // Grid methods asset to help clean code
+	private HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
+	
+	private Sprite hexTileSprite; // Sprite for hexTile to get gaps
 	private float widthGap; // Horizontal spacing based on Sprite
 	private float heightGap; // Vertical spacing based on Sprite
-	private HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
 	#endregion
 	
 	
-    #region Lifecycle Methods
+    #region HexGrid Lifecycle
+	private void Awake() { Instance = this; }
+
     void Start()
 	{
-		// Set the sprite to get the width and height for grid generation
+		// Assign HexGrid Methods and Sprite from attached components
+		hexGridMethods = GetComponent<HexGridMethods>();
 		hexTileSprite = hexTileObject.GetComponent<SpriteRenderer>().sprite; 
+		
+		// Set the sprite to get the width and height for grid generation
 		widthGap = (hexTileSprite.bounds.extents.x * 2f) + widthOffset;
 		heightGap = (hexTileSprite.bounds.extents.y * 1.5f) + heightOffset;
 	
@@ -59,77 +68,26 @@ public class HexGrid : MonoBehaviour
 			}
 		}
 	}   
+    #endregion
+  
+  
+	#region HexGrid Accessors
+	// Grid Gap Methods
+	public float GetWidthGap() => widthGap;
 	
-	public Vector3 GetWorldPositionFromGrid(int x, int y)  
-	{
-		// Set the position of the tile based on Grid Coordinate. (Using calculated gaps)
-		float xPosition = x * widthGap;
-		float yPosition = y * heightGap;
-				
-		// If the row is odd we need to adjust the x gap by half
-		if (y % 2 != 0) xPosition +=  widthGap / 2;
-				
-		// Create Vector3 to use when instantiating HexTile.
-		return new Vector3(xPosition, yPosition, 0);
-	}
+	public float GetHeightGap() => heightGap;
 	
-	public Vector2Int GetGridPositionFromWorld(Vector3 worldPos)  
-	{
-		// Create Vector2 for Grid Coordinates, Get Y Coordinate
-		Vector2Int gridPosition = new Vector2Int(0,0);
-		gridPosition.y = Mathf.RoundToInt(worldPos.y / heightGap);
-		
-		// If Y is an odd row make sure to adjust the X back to account
-		if (gridPosition.y % 2 == 0) 
-		{ gridPosition.x = Mathf.RoundToInt(worldPos.x / widthGap); }
-		else 
-		{ gridPosition.x = Mathf.RoundToInt((worldPos.x / widthGap) - (widthGap / 2)); }
+	public int GetRowLength() => rowLength;
+	
+	public int GetColHeight() => colHeight;
 
-		// Test six neighbours of gridPosition (with oddRow check) in case its inaccurate due to hex
-		bool oddRow = gridPosition.y % 2 ==1;
-		List<Vector2Int> neighbourList = new List<Vector2Int> 
-		{
-			// Neighbours left and right
-			gridPosition + new Vector2Int(-1, 0), gridPosition + new Vector2Int(+1, 0),
-			// Neighbours above
-			gridPosition + new Vector2Int(oddRow ? +1 : -1, +1), gridPosition + new Vector2Int(+0, +1),
-			// Neighbours below
-			gridPosition + new Vector2Int(oddRow ? +1 : -1, -1), gridPosition + new Vector2Int(+0, -1),
-		};
-		
-		// Check distance is lowest to ensure correct grid position is set
-		foreach (Vector2Int neighbour in neighbourList) 
-		{
-			// If distance from world to neighbour is lower than current closestPosition then set that as closestPosition.
-			if (Vector2.Distance(new Vector2(worldPos.x, worldPos.y), GetWorldPositionFromGrid(neighbour.x, neighbour.y)) < 
-				Vector2.Distance(new Vector2(worldPos.x, worldPos.y), GetWorldPositionFromGrid(gridPosition.x, gridPosition.y))) 
-			{
-				gridPosition = neighbour;
-			}
-		}
-		
-		return gridPosition;
-	}
-    #endregion
-  
-  
-	#region Accessor Methods
-	public HexTile GetHexTileAtPosition(int x, int y)  
-	{
-		return hexTileArray[x, y];
-	}
+	// Grid Position Methods
+	public HexTile GetHexTileAtPosition(int x, int y)   => hexTileArray[x, y];
+	
+	public Vector2Int GetGridPositionFromWorld(Vector3 worldPos) => hexGridMethods.GetGridPositionFromWorld(worldPos);
+	
+	public Vector3 GetWorldPositionFromGrid(int x, int y) => hexGridMethods.GetWorldPositionFromGrid(x, y);
+	
+	public bool IsMousOffGrid(Vector2Int gridPosition) => hexGridMethods.IsMousOffGrid(gridPosition);
 	#endregion
-  
-    
-    #region Helper Methods
-	public bool IsMousOffGrid(Vector2Int gridPosition)  
-	{
-		// Safety check the x and y to not allow less than 0 or more than Max
-		if (gridPosition.x < 0) return true;
-		if (gridPosition.x >= rowLength) return true;
-		if (gridPosition.y < 0) return true;
-		if (gridPosition.y >= colHeight) return true;
-		return false;
-	}
-    #endregion
 }

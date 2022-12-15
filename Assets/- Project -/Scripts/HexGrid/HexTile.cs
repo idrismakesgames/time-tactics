@@ -5,14 +5,14 @@ using TMPro;
 
 public class HexTile : MonoBehaviour
 {
-    #region Editable Variables
+    #region HexTile Editable Vars
 	[SerializeField] private TextMeshPro textMeshPro; // Text to show Grid Coordinate
 	[SerializeField] private Sprite hexSprite; // Sprite for HexTile when not selected
 	[SerializeField] private Sprite hexSpriteSelected; // Sprite for HexTile when selected
 	#endregion
 	
 	
-    #region Private Variables
+    #region HexTile Private Vars
 	private GameObject hexTileObject; // GameObject that was instantiated by HexGrid 
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
 	private Vector2 hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
@@ -20,7 +20,7 @@ public class HexTile : MonoBehaviour
 	#endregion
 	
 	
-    #region Lifecycle Methods
+    #region HexTile LifeCycle
 	private void Start() 
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -47,19 +47,10 @@ public class HexTile : MonoBehaviour
     
 	    
     #region HexTile Accessors
-	public GameObject GetHexTileObject()
-	{
-		return this.hexTileObject;
-	}
+	public GameObject GetHexTileObject() => this.hexTileObject;
+
+	public Vector2 GetWorldPosition() => this.hexTileWorldPosition;
 	
-	public Vector2 GetWorldPosition()
-	{
-		return this.hexTileWorldPosition;
-	}
-	
-	public Vector2 GetGridPosition()
-	{
-		return this.hexTileGridPosition;
-	}
+	public Vector2 GetGridPosition() => this.hexTileGridPosition;
     #endregion
 }
