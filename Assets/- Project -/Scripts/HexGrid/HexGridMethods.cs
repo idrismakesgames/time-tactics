@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class HexGridMethods : MonoBehaviour
 {
-	private void Update() 
-	{
-		// Get mouse position on grid and set selected hex tile
-		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2Int gridPosition = GetGridPositionFromWorld(mousePosition);
-		GameController.Instance.SetSelectedHex(IsMousOffGrid(gridPosition) ? null : HexGrid.Instance.GetHexTileAtPosition(gridPosition.x, gridPosition.y));
-	}
-	
 	public Vector3 GetWorldPositionFromGrid(int x, int y)  
 	{
 		// Set the position of the tile based on Grid Coordinate. (Using calculated gaps)

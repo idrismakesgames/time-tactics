@@ -11,17 +11,17 @@ public class HexTile : MonoBehaviour
 	[SerializeField] private Sprite hexSpriteSelected; // Sprite for HexTile when selected
 	#endregion
 	
-	
     #region HexTile Private Vars
 	private GameObject hexTileObject; // GameObject that was instantiated by HexGrid 
+	private SpriteRenderer spriteRenderer; // Store sprite renderer for qwuick changeing.
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
 	private Vector2 hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
-	private SpriteRenderer spriteRenderer; // Store sprite renderer for qwuick changeing.
+	
+	private ShipUnit shipUnitOnTile;
 	#endregion
 	
-	
     #region HexTile LifeCycle
-	private void Start() 
+	private void Awake() 
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
@@ -33,7 +33,6 @@ public class HexTile : MonoBehaviour
 	}
 	#endregion
 	
-	
     #region HexTile Methods
 	public void SetStartingValues(GameObject hexTileObj, Vector2 hexTileWorldPos, Vector2 hexTileGridPos) 
 	{
@@ -44,13 +43,20 @@ public class HexTile : MonoBehaviour
 		textMeshPro.text = $"{(int)Mathf.Round(hexTileGridPos.x)}-{(int)Mathf.Round(hexTileGridPos.y)}";
 	}
     #endregion
-    
 	    
     #region HexTile Accessors
+	// HexTile related accessors
 	public GameObject GetHexTileObject() => this.hexTileObject;
 
 	public Vector2 GetWorldPosition() => this.hexTileWorldPosition;
 	
 	public Vector2 GetGridPosition() => this.hexTileGridPosition;
+	
+	// ShipUnit releated Accessors
+	public void SetShipUnit(ShipUnit shipUnit)  { shipUnitOnTile = shipUnit; }
+	
+	public void ClearShipUnit(ShipUnit shipUnit) { shipUnitOnTile = null; }
+	
+	public ShipUnit GetShipUnit() => shipUnitOnTile;
     #endregion
 }

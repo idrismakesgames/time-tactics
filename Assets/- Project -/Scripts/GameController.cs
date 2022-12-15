@@ -5,9 +5,10 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 	#region GameController Variables
-	public static GameController Instance { get; private set; } // Singleton to allow GameController access gamewide
+	public static GameController Instance { get; private set; } // Singleton to allow GameController access game wide
 	private HexTile selectedHexTile; // Selected hex stored here to show visual
-	private Ship selectedShip; // Selected hex stored here to show visual
+	private ShipUnit hoveredShip; // Selected hex stored here to show visual
+	private ShipUnit selectedShip; // Selected hex stored here to show visual
 	#endregion
 	
 	
@@ -22,8 +23,12 @@ public class GameController : MonoBehaviour
 	
 	public HexTile GetSelectedHex() => selectedHexTile;
 	
-	public void SetSelectedShip(Ship selectedShipObject) { selectedShip = selectedShipObject; }
+	public void SetSelectedShip(ShipUnit selectedShipObject) { selectedShip = selectedShipObject; }
 	
-	public Ship GetSelectedShip() => selectedShip;
+	public ShipUnit GetSelectedShip() => selectedShip;
+	
+	public void SetHoveredShip(ShipUnit hoveredShipObject) { hoveredShip = hoveredShipObject; }
+	
+	public ShipUnit GetHoveredShip() => hoveredShip;
 	#endregion
 }

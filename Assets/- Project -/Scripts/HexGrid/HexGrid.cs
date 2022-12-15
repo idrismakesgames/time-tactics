@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HexGrid : MonoBehaviour
 {
-	public static HexGrid Instance { get; private set; } // Singleton to allow HexGrid access gamewide
+	public static HexGrid Instance { get; private set; } // Singleton to allow HexGrid access game wide
 	
     #region HexGrid Editable Vars
 	[SerializeField] private HexTile hexTileObject;
@@ -13,7 +13,6 @@ public class HexGrid : MonoBehaviour
 	[SerializeField] private int rowLength; // Number of rows in HexGrid
 	[SerializeField] private int colHeight; // Number of Columns in HexGrid
 	#endregion
-	
 	
     #region HexGrid Private Vars
 	private HexGridMethods hexGridMethods; // Grid methods asset to help clean code
@@ -24,16 +23,18 @@ public class HexGrid : MonoBehaviour
 	private float heightGap; // Vertical spacing based on Sprite
 	#endregion
 	
-	
     #region HexGrid Lifecycle
-	private void Awake() { Instance = this; }
-
-    void Start()
-	{
+	private void Awake() 
+	{ 
+		Instance = this; 
+		
 		// Assign HexGrid Methods and Sprite from attached components
 		hexGridMethods = GetComponent<HexGridMethods>();
 		hexTileSprite = hexTileObject.GetComponent<SpriteRenderer>().sprite; 
-		
+	}
+
+	private void Start()
+	{
 		// Set the sprite to get the width and height for grid generation
 		widthGap = (hexTileSprite.bounds.extents.x * 2f) + widthOffset;
 		heightGap = (hexTileSprite.bounds.extents.y * 1.5f) + heightOffset;
@@ -46,7 +47,7 @@ public class HexGrid : MonoBehaviour
 	}
     #endregion
     
-    
+
     #region HexGrid Methods
 	private void GenerateHexGrid()
 	{
@@ -69,7 +70,6 @@ public class HexGrid : MonoBehaviour
 		}
 	}   
     #endregion
-  
   
 	#region HexGrid Accessors
 	// Grid Gap Methods
