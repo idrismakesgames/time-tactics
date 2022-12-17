@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class ShipUnit : MonoBehaviour
 {
+	public float speed;
     #region Ship Editable Vars
 	[SerializeField] private Vector2Int shipGridPosition; // Starting grid position for this ship
+	[SerializeField] private float topSpeed; // Top speed for this ship
 	[SerializeField] private float shipAcceleration; // Acceleration for this ship
 	[SerializeField] private float shipDecceleration; // Deceleration for this ship
+	[SerializeField] private Transform shipTarget; // Deceleration for this ship
+	
 	[SerializeField] private Sprite shipSprite; // Sprite for Ship when not selected
 	[SerializeField] private Sprite shipSpriteHovered; // Sprite for Ship when selected
 	[SerializeField] private Sprite shipSpriteSelected; // Sprite for Ship when selected
@@ -17,6 +21,7 @@ public class ShipUnit : MonoBehaviour
 	private Vector2 shipWorldPosition; // Position in the world for the Ship 
 	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changeing.
 	private Rigidbody2D rigidBody; // Store sprite renderer for quick changeing.
+	private Vector2 velocity; // Store sprite renderer for quick changeing.
 	#endregion
 	
     #region Ship LifeCycle
@@ -42,19 +47,20 @@ public class ShipUnit : MonoBehaviour
 	{
 		ShipUnit selectedShip = GameController.Instance.GetSelectedShip();
 		SetSpriteBasedOnHoverSelected(selectedShip);
-		
-		// If Selected and Space button pressed acceleration
-		if (selectedShip == this) 
-		{
-			if (Input.GetKey(KeyCode.Space)) 
-			{
-				rigidBody.AddRelativeForce(Vector2.up * shipAcceleration * Time.deltaTime);
-			} 
-			else 
-			{
-				//rigidBody.velocity = TODO do something with slowdown.
-			}
+	}
+	
+	void FixedUpdate() 
+	{
+		ShipUnit selectedShip = GameController.Instance.GetSelectedShip();
+		if (selectedShip == this) {
+			// Set target, calculate time it will take by checking distance and top speed
+			// Time factor that takes in passed time and duration will be what we use as the lerp position.
+			// Use Smoothstep or anim curve for accel decel.			
+			
+			// Do same for rotate, how many second to get to rotation. 
+			// Use time to acount for movement as this is what this prototype is all about!!!
 		}
+
 	}
 	#endregion
 	
