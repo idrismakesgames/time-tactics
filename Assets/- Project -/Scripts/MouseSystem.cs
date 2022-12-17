@@ -26,38 +26,40 @@ public class MouseSystem : MonoBehaviour
 			ShipUnit hoveredShipUnit = hoveredHex.GetShipUnit();
 			ShipUnit selectedShipUnit = GameController.Instance.GetSelectedShip();
 		
-			if (hoveredShipUnit != null) 
-			{
-				// If so set Hovered Ship and not selected Hex.
-				if (hoveredShipUnit != selectedShipUnit) {
-					GameController.Instance.SetHoveredShip(hoveredShipUnit);
-				}
-				GameController.Instance.SetSelectedHex(null);
-			} 
-			else 
-			{
-				// Else select hex
-				GameController.Instance.SetSelectedHex(hoveredHex);
-				GameController.Instance.SetHoveredShip(null);
-			}
-			
-			// If mouse Click and Hovered ship = true Set selected ship.
-			if (Input.GetMouseButtonDown(0)) 
-			{
-				if (hoveredShipUnit != null) 
-				{
-					if (hoveredShipUnit != selectedShipUnit) {
-						GameController.Instance.SetSelectedShip(hoveredShipUnit);
-					} else  
-					{
-						GameController.Instance.SetSelectedShip(null);
-					}
-				}
-					
-				GameController.Instance.SetHoveredShip(null);
-			}
-	
+			HandleHover(hoveredHex, hoveredShipUnit, selectedShipUnit);
+			HandClick(hoveredHex, hoveredShipUnit, selectedShipUnit);
 		}
 	}
+	#endregion
+	
+	#region MouseSystem Methods
+	private void HandleHover( HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
+	{
+		if (hoveredShipUnit != null) 
+		{
+			// If so set hovered Ship and not selected Hex.
+			if (hoveredShipUnit != selectedShipUnit) { GameController.Instance.SetHoveredShip(hoveredShipUnit); }
+			GameController.Instance.SetHoveredHex(null);
+		} 
+		else 
+		{
+			// Else hover hex
+			GameController.Instance.SetHoveredHex(hoveredHex);
+			GameController.Instance.SetHoveredShip(null);
+		}
+	}
+	
+	private void HandClick( HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
+	{
+		// If mouse Click and Hovered ship = true Set selected ship.
+		if (Input.GetMouseButtonDown(0)) 
+		{
+			if (hoveredShipUnit != null) { 
+				GameController.Instance.SetSelectedShip(hoveredShipUnit != selectedShipUnit ? hoveredShipUnit : null);
+			}
+			GameController.Instance.SetHoveredShip(null);
+		}
+	}
+	
 	#endregion
 }

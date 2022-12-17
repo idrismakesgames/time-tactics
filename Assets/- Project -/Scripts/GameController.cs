@@ -6,9 +6,10 @@ public class GameController : MonoBehaviour
 {
 	#region GameController Variables
 	public static GameController Instance { get; private set; } // Singleton to allow GameController access game wide
-	private HexTile selectedHexTile; // Selected hex stored here to show visual
-	private ShipUnit hoveredShip; // Selected hex stored here to show visual
-	private ShipUnit selectedShip; // Selected hex stored here to show visual
+	private HexTile hoveredHexTile; // Hovered Hex stored here to show visual
+	private HexTile selectedHexTile; // Selected Hex stored here to show visual
+	private ShipUnit hoveredShip; // Hovered Ship stored here to show visual
+	private ShipUnit selectedShip; // Selected Ship stored here to show visual
 	#endregion
 	
 	
@@ -23,6 +24,11 @@ public class GameController : MonoBehaviour
 	
 	public HexTile GetSelectedHex() => selectedHexTile;
 	
+	public void SetHoveredHex(HexTile hoveredHextileObject) { hoveredHexTile = hoveredHextileObject; }
+	
+	public HexTile GetHoveredHex() => hoveredHexTile;
+	
+	// Selected Ship Methods
 	public void SetSelectedShip(ShipUnit selectedShipObject) { selectedShip = selectedShipObject; }
 	
 	public ShipUnit GetSelectedShip() => selectedShip;

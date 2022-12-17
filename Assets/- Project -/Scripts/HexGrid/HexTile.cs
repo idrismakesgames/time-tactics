@@ -29,7 +29,7 @@ public class HexTile : MonoBehaviour
 	private void Update() 
 	{
 		// Check if this tile is the selected instance
-		spriteRenderer.sprite = GameController.Instance.GetSelectedHex() == this ? hexSpriteSelected : hexSprite;
+		spriteRenderer.sprite = GameController.Instance.GetHoveredHex() == this ? hexSpriteSelected : hexSprite;
 	}
 	#endregion
 	
