@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class MouseSystem : MonoBehaviour
 {
-	#region MouseSystem Variables
+	// --------------------------------------------------------- START ------------------------------------------------------\\
+	#region -------------------------------------------- MouseSystem Variables ----------------------------------------------
+	
 	public static MouseSystem Instance { get; private set; } // Singleton to allow MouseSystem access game wide
-	#endregion
+	
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
 	
 	
-    #region MouseSystem Lifecycle
+	
+	// --------------------------------------------------------- START ------------------------------------------------------\\
+    #region -------------------------------------------- MouseSystem Lifecycle ----------------------------------------------
+    
 	private void Awake() { Instance = this; }
 
 	private void Update() 
@@ -30,10 +37,16 @@ public class MouseSystem : MonoBehaviour
 			HandClick(hoveredHex, hoveredShipUnit, selectedShipUnit);
 		}
 	}
-	#endregion
 	
-	#region MouseSystem Methods
-	private void HandleHover( HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// --------------------------------------------------------- START ------------------------------------------------------\\
+	#region ---------------------------------------------- MouseSystem Methods ----------------------------------------------
+	
+	private void HandleHover(HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
 	{
 		if (hoveredShipUnit != null) 
 		{
@@ -49,7 +62,7 @@ public class MouseSystem : MonoBehaviour
 		}
 	}
 	
-	private void HandClick( HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
+	private void HandClick(HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
 	{
 		// If mouse Click and Hovered ship = true Set selected ship.
 		if (Input.GetMouseButtonDown(0)) 
@@ -61,5 +74,9 @@ public class MouseSystem : MonoBehaviour
 		}
 	}
 	
-	#endregion
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
 }

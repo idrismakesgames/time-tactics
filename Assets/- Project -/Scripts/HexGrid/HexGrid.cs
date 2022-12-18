@@ -4,26 +4,41 @@ using UnityEngine;
 
 public class HexGrid : MonoBehaviour
 {
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region ----------------------------------------- HexGrid Variables ---------------------------------------------------
+    
 	public static HexGrid Instance { get; private set; } // Singleton to allow HexGrid access game wide
 	
-    #region HexGrid Editable Vars
-	[SerializeField] private HexTile hexTileObject;
+	[SerializeField] private HexTile hexTileObject;  // HexTile object to get sprite info from
 	[SerializeField] private float widthOffset; // Row spacing for hex
 	[SerializeField] private float heightOffset; // Column spacing for hex
 	[SerializeField] private int rowLength; // Number of rows in HexGrid
 	[SerializeField] private int colHeight; // Number of Columns in HexGrid
-	#endregion
 	
-    #region HexGrid Private Vars
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region ------------------------------------- HexGrid Private Variables -----------------------------------------------
+    
 	private HexGridMethods hexGridMethods; // Grid methods asset to help clean code
 	private HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
 	
 	private Sprite hexTileSprite; // Sprite for hexTile to get gaps
 	private float widthGap; // Horizontal spacing based on Sprite
 	private float heightGap; // Vertical spacing based on Sprite
-	#endregion
 	
-    #region HexGrid Lifecycle
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+
+	
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region ------------------------------------------ HexGrid Lifecycle --------------------------------------------------
+    
 	private void Awake() 
 	{ 
 		Instance = this; 
@@ -45,10 +60,15 @@ public class HexGrid : MonoBehaviour
 		// Generate the HexGrid
 		GenerateHexGrid();
 	}
-    #endregion
-    
+	
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
 
-    #region HexGrid Methods
+
+
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region ------------------------------------------ HexGrid Methods ----------------------------------------------------
+    
 	private void GenerateHexGrid()
 	{
 		// Loop throught set Row and Column amount to generate Grid
@@ -69,9 +89,15 @@ public class HexGrid : MonoBehaviour
 			}
 		}
 	}   
-    #endregion
-  
-	#region HexGrid Accessors
+	
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	#region ----------------------------------------- HexGrid Accessors ---------------------------------------------------
+	
 	// Grid Gap Methods
 	public float GetWidthGap() => widthGap;
 	
@@ -89,5 +115,10 @@ public class HexGrid : MonoBehaviour
 	public Vector3 GetWorldPositionFromGrid(int x, int y) => hexGridMethods.GetWorldPositionFromGrid(x, y);
 	
 	public bool IsMousOffGrid(Vector2Int gridPosition) => hexGridMethods.IsMousOffGrid(gridPosition);
-	#endregion
-}
+	
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+} 

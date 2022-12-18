@@ -4,27 +4,38 @@ using UnityEngine;
 
 public class ShipUnit : MonoBehaviour
 {
-	public float speed;
-    #region Ship Editable Vars
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region ------------------------------------- Ship Editable Variables -------------------------------------------------
+    
 	[SerializeField] private Vector2Int shipGridPosition; // Starting grid position for this ship
-	[SerializeField] private float topSpeed; // Top speed for this ship
-	[SerializeField] private float shipAcceleration; // Acceleration for this ship
-	[SerializeField] private float shipDecceleration; // Deceleration for this ship
-	[SerializeField] private Transform shipTarget; // Deceleration for this ship
+	[SerializeField] private float topSpeed; // Top speed for this ship (unit per second)
+	[SerializeField] private Transform shipTarget; // Target for this ship to move towards
 	
 	[SerializeField] private Sprite shipSprite; // Sprite for Ship when not selected
 	[SerializeField] private Sprite shipSpriteHovered; // Sprite for Ship when selected
 	[SerializeField] private Sprite shipSpriteSelected; // Sprite for Ship when selected
-	#endregion
 	
-    #region Ship Private Vars
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region --------------------------------------- Ship Private Variables ------------------------------------------------
+    
 	private Vector2 shipWorldPosition; // Position in the world for the Ship 
 	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changeing.
 	private Rigidbody2D rigidBody; // Store sprite renderer for quick changeing.
 	private Vector2 velocity; // Store sprite renderer for quick changeing.
-	#endregion
 	
-    #region Ship LifeCycle
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+    #region ------------------------------------------- Ship Lifecycle ----------------------------------------------------
+    
 	private void Awake() 
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -47,6 +58,8 @@ public class ShipUnit : MonoBehaviour
 	{
 		ShipUnit selectedShip = GameController.Instance.GetSelectedShip();
 		SetSpriteBasedOnHoverSelected(selectedShip);
+		
+		// Method to check where ship is on the grid and then update which hextile it belongs in. (remove from current, add to another.)
 	}
 	
 	void FixedUpdate() 
@@ -62,9 +75,15 @@ public class ShipUnit : MonoBehaviour
 		}
 
 	}
-	#endregion
 	
-	#region ShipUnit Methods
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	#region ------------------------------------------- Ship Methods ------------------------------------------------------
+	
 	private void SetSpriteBasedOnHoverSelected(ShipUnit selectedShip) 
 	{
 		// Set Ship sprrite based on hover or selected status in the Game Controller.
@@ -81,7 +100,7 @@ public class ShipUnit : MonoBehaviour
 			spriteRenderer.sprite = shipSprite; 
 		}
 	}
-	#endregion
-
-
+	
+	#endregion ------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------//
 }

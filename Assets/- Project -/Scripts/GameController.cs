@@ -4,21 +4,33 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-	#region GameController Variables
+	// ------------------------------------------------------- START --------------------------------------------------------\\
+	#region ----------------------------------------- GameController Variables ----------------------------------------------
+	
 	public static GameController Instance { get; private set; } // Singleton to allow GameController access game wide
 	private HexTile hoveredHexTile; // Hovered Hex stored here to show visual
 	private HexTile selectedHexTile; // Selected Hex stored here to show visual
 	private ShipUnit hoveredShip; // Hovered Ship stored here to show visual
 	private ShipUnit selectedShip; // Selected Ship stored here to show visual
-	#endregion
+	
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
 	
 	
-    #region GameController Lifecycle
+	
+	// ------------------------------------------------------- START --------------------------------------------------------\\
+    #region ----------------------------------------- GameController Lifecycle-----------------------------------------------
+    
 	private void Awake() { Instance = this; }
-	#endregion
+	
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
 	
 	
-	#region GameController Accessors
+	
+	// ------------------------------------------------------- START --------------------------------------------------------\\
+	#region ---------------------------------------- GameController Accessors -----------------------------------------------
+	
 	// Selected Tile Methods
 	public void SetSelectedHex(HexTile selectedHexTileObject) { selectedHexTile = selectedHexTileObject; }
 	
@@ -36,5 +48,10 @@ public class GameController : MonoBehaviour
 	public void SetHoveredShip(ShipUnit hoveredShipObject) { hoveredShip = hoveredShipObject; }
 	
 	public ShipUnit GetHoveredShip() => hoveredShip;
-	#endregion
+	
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
 }
