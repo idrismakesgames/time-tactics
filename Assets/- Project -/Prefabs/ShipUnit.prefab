@@ -78,7 +78,7 @@ SpriteRenderer:
   m_Sprite: {fileID: 21300000, guid: b3a44ee33313ded4d902f8cfa6e7e78c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
-  m_FlipY: 0
+  m_FlipY: 1
   m_DrawMode: 0
   m_Size: {x: 1.88, y: 1.66}
   m_AdaptiveModeThreshold: 0.5
@@ -98,12 +98,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ebe68fbf7a77c247b977bd37702ed8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shipGridPosition: {x: 0, y: 0}
-  shipAcceleration: 100
-  shipDecceleration: 0
   shipSprite: {fileID: 21300000, guid: b3a44ee33313ded4d902f8cfa6e7e78c, type: 3}
   shipSpriteHovered: {fileID: 21300000, guid: f5620726d16638740bdb151436ea09ea, type: 3}
   shipSpriteSelected: {fileID: 21300000, guid: c8c92582c43ec014aadea8817dc7e77c, type: 3}
+  shipGridPosition: {x: 0, y: 0}
+  shipTarget: {fileID: 0}
+  topSpeed: 2
+  shipSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotateSpeed: 20
+  rotateSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!50 &2123633729986192801
 Rigidbody2D:
   serializedVersion: 4

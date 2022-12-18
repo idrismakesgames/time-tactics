@@ -69,7 +69,11 @@ public class MouseSystem : MonoBehaviour
 		{
 			if (hoveredShipUnit != null) { 
 				GameController.Instance.SetSelectedShip(hoveredShipUnit != selectedShipUnit ? hoveredShipUnit : null);
+			} else if (selectedShipUnit != null)
+			{
+				selectedShipUnit.SetShipMoveTarget(hoveredHex);
 			}
+			
 			GameController.Instance.SetHoveredShip(null);
 		}
 	}

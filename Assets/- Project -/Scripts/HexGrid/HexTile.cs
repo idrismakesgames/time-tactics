@@ -81,7 +81,7 @@ public class HexTile : MonoBehaviour
 	// ShipUnit releated Accessors
 	public void SetShipUnit(ShipUnit shipUnit)  { shipUnitOnTile = shipUnit; }
 	
-	public void ClearShipUnit(ShipUnit shipUnit) { shipUnitOnTile = null; }
+	public void ClearShipUnit() { shipUnitOnTile = null; }
 	
 	public ShipUnit GetShipUnit() => shipUnitOnTile;
 	
