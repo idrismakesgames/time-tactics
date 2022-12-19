@@ -537,16 +537,8 @@ PrefabInstance:
       value: ShipUnit 2
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
-      propertyPath: topSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: shipTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
-      propertyPath: rotateSpeed
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: shipAcceleration
@@ -757,16 +749,8 @@ PrefabInstance:
       value: ShipUnit 1
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
-      propertyPath: topSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: shipTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
-      propertyPath: rotateSpeed
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: shipAcceleration
@@ -775,6 +759,14 @@ PrefabInstance:
     - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: shipDecceleration
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
+      propertyPath: shipGridPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
+      propertyPath: shipGridPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192806, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: shipSpeedCurve.m_Curve.Array.size
@@ -866,11 +858,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192807, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.017
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192807, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.205
       objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192807, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: m_LocalPosition.z

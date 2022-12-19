@@ -15,27 +15,49 @@ public class MouseSystem : MonoBehaviour
 	
 	
 	// --------------------------------------------------------- START ------------------------------------------------------\\
+	#region ---------------------------------------------- Private Variables ------------------------------------------------
+	
+	private Vector3 mousePosition;
+	private Vector2Int gridPosition;
+	private ShipUnit hoveredShip;
+	private ShipUnit selectedShip;
+	private HexTile hoveredHex;
+	
+	#endregion --------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------//
+	
+	
+	
+	// --------------------------------------------------------- START ------------------------------------------------------\\
     #region -------------------------------------------- MouseSystem Lifecycle ----------------------------------------------
     
 	private void Awake() { Instance = this; }
 
+	private void FixedUpdate() 
+	{
+		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		gridPosition = HexGrid.Instance.GetGridPositionFromWorld(mousePosition);
+		selectedShip = GameController.Instance.GetSelectedShip();
+		
+		
+		if (!HexGrid.Instance.IsMousOffGrid(gridPosition)) {
+			RaycastHit2D hit = Physics2D.Raycast(mousePosition, -Vector2.up);
+			
+			if(hit.collider != null)
+			{
+				if (hit.collider.gameObject.TryGetComponent(out ShipUnit ship)) { hoveredShip = ship; } 
+				else { hoveredShip = null; }
+			}
+			
+			hoveredHex = HexGrid.Instance.GetHexTileAtPosition(gridPosition.x, gridPosition.y);
+		}
+	}
+	
 	private void Update() 
 	{
-		// Get mouse position on grid and set selected hex tile
-		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2Int gridPosition = HexGrid.Instance.GetGridPositionFromWorld(mousePosition);
-		
-		// Check if off grid.
-		if (!HexGrid.Instance.IsMousOffGrid(gridPosition)) 
-		{
-			// Then check is selectedHex has Ship Unit in it.
-			HexTile hoveredHex = HexGrid.Instance.GetHexTileAtPosition(gridPosition.x, gridPosition.y);
-			ShipUnit hoveredShipUnit = hoveredHex.GetShipUnit();
-			ShipUnit selectedShipUnit = GameController.Instance.GetSelectedShip();
-		
-			HandleHover(hoveredHex, hoveredShipUnit, selectedShipUnit);
-			HandClick(hoveredHex, hoveredShipUnit, selectedShipUnit);
-		}
+		// Then check is selectedHex has Ship Unit in it.
+		HandleHover();
+		HandClick();
 	}
 	
 	#endregion --------------------------------------------------------------------------------------------------------------
@@ -46,12 +68,20 @@ public class MouseSystem : MonoBehaviour
 	// --------------------------------------------------------- START ------------------------------------------------------\\
 	#region ---------------------------------------------- MouseSystem Methods ----------------------------------------------
 	
-	private void HandleHover(HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
+	private void HandleHover() 
 	{
-		if (hoveredShipUnit != null) 
+		// If hovering over ship
+		if (hoveredShip != null) 
 		{
-			// If so set hovered Ship and not selected Hex.
-			if (hoveredShipUnit != selectedShipUnit) { GameController.Instance.SetHoveredShip(hoveredShipUnit); }
+			// If not hovering over selected ship, set the hover graphic
+			if (hoveredShip != selectedShip) { 
+				GameController.Instance.SetHoveredShip(hoveredShip); 
+			} else 
+			{
+				// Otherwise show the selected graphic
+				GameController.Instance.SetHoveredShip(null); ;
+			}
+			// Dont show any hex as hovering as over ship right now.
 			GameController.Instance.SetHoveredHex(null);
 		} 
 		else 
@@ -62,18 +92,19 @@ public class MouseSystem : MonoBehaviour
 		}
 	}
 	
-	private void HandClick(HexTile hoveredHex, ShipUnit hoveredShipUnit, ShipUnit selectedShipUnit) 
+	private void HandClick() 
 	{
 		// If mouse Click and Hovered ship = true Set selected ship.
 		if (Input.GetMouseButtonDown(0)) 
 		{
-			if (hoveredShipUnit != null) { 
-				GameController.Instance.SetSelectedShip(hoveredShipUnit != selectedShipUnit ? hoveredShipUnit : null);
-			} else if (selectedShipUnit != null)
+			if (hoveredShip != null) { 
+				GameController.Instance.SetSelectedShip(hoveredShip != selectedShip ? hoveredShip : null);
+			} else if (selectedShip != null)
 			{
-				selectedShipUnit.SetShipMoveTarget(hoveredHex);
+				// if clicking while not hovering a ship, mean you are clicking on tile. so set move target.
+				selectedShip.SetShipMoveTarget(hoveredHex);
 			}
-			
+			// Deselct ship hover after click not matter what.
 			GameController.Instance.SetHoveredShip(null);
 		}
 	}
