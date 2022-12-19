@@ -12,11 +12,8 @@ public class ShipUnit : MonoBehaviour
 	[SerializeField] private Sprite shipSpriteSelected; // Sprite for Ship when selected
 	
 	[SerializeField] private Vector2Int shipGridPosition; // Starting grid position for this ship
-	[SerializeField] private HexTile shipTarget; // Target for this ship to move towards
 	[SerializeField] private float topSpeed; // Top speed for this ship 
-	[SerializeField] private AnimationCurve shipSpeedCurve; // Curve to ease in and out the ship speed
 	[SerializeField] private float rotateSpeed; // Rotation speed for this ship 
-	[SerializeField] private AnimationCurve rotateSpeedCurve; // Curve to ease in and out the ship speed
 	
 	
 	#endregion ------------------------------------------------------------------------------------------------------------
@@ -33,6 +30,8 @@ public class ShipUnit : MonoBehaviour
 	private Rigidbody2D rigidBody; // Store sprite renderer for quick changeing
 	private ShipUnit selectedShip; // Selected Ship as dictated from the GameController
 	private HexTile hexTileInShipPosition; // HexTile in grid that this ship is currently on or over
+	private HexTile shipTarget; // Target for this ship to move towards
+	
 	private Vector2 velocity; // Store sprite renderer for quick changeing
 	private Vector2 shipStart; // Location of ship start location when moving
 	private Vector2 shipEnd; // Location of ship end location when moving.
@@ -125,10 +124,6 @@ public class ShipUnit : MonoBehaviour
 		shipStart = transform.position;
 		moveDuration = Vector2.Distance(shipStart, shipEnd) / topSpeed;
 		
-		// PROBLEM Longer journeys are slower. Shorter are faster, do below to balance.
-		if (moveDuration < 2) { moveDuration = 2; }
-		if (moveDuration > 8) { moveDuration = 8; }
-		
 		// Initialize time passed that will start now that target has been assigned.
 		moveTimePassed = 0f;
 		shipIsMoving = true;
@@ -163,8 +158,7 @@ public class ShipUnit : MonoBehaviour
 			// Get movement step based on time passed since last frame, vs calculated duration from start.
 			float movementAmount = moveTimePassed / moveDuration;
 			
-			// Adjust movement Amount with curve if we want to ease in and out.
-			movementAmount = shipSpeedCurve.Evaluate(movementAmount);
+			// TODO Implement Acceleration and deceleration on fixed time rather than ratio of distance
 			
 			// Move ship with towards top speed to do this.
 			rigidBody.MovePosition(Vector2.Lerp(shipStart, shipEnd, movementAmount));
@@ -188,8 +182,7 @@ public class ShipUnit : MonoBehaviour
 			// Get movement step based on time passed since last frame, vs calculated duration from start.
 			float rotateAmount = rotateTimePassed / rotateDuration;
 			
-			// Adjust movement Amount with curve if we want to ease in and out.
-			rotateAmount = rotateSpeedCurve.Evaluate(rotateAmount);
+			// TODO Implement Acceleration and deceleration on fixed time rather than ratio of distance
 			
 			// Rotate object based on rotate amount
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotationEnd, rotateAmount);
