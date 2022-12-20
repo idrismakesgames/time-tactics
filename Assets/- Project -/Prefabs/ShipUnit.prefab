@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2123633729986192807}
   - component: {fileID: 2123633729986192804}
   - component: {fileID: 2123633729986192806}
+  - component: {fileID: 1663959243137552469}
   - component: {fileID: 2123633729986192801}
   - component: {fileID: 2894871482826494573}
   m_Layer: 3
@@ -104,8 +105,20 @@ MonoBehaviour:
   shipSpriteHovered: {fileID: 21300000, guid: f5620726d16638740bdb151436ea09ea, type: 3}
   shipSpriteSelected: {fileID: 21300000, guid: c8c92582c43ec014aadea8817dc7e77c, type: 3}
   shipGridPosition: {x: 0, y: 0}
+--- !u!114 &1663959243137552469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123633729986192805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b939231bd9b5b0a46a54bff40f455336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   topSpeed: 2
-  rotateSpeed: 30
+  rotateSpeed: 20
 --- !u!50 &2123633729986192801
 Rigidbody2D:
   serializedVersion: 4

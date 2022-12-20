@@ -4,53 +4,49 @@ using UnityEngine;
 
 public class MouseSystem : MonoBehaviour
 {
-	// --------------------------------------------------------- ##### ------------------------------------------------------\\
-	#region -------------------------------------------- MouseSystem Variables ----------------------------------------------
-	
+	#region MouseSystem Variables 
 	public static MouseSystem Instance { get; private set; } // Singleton to allow MouseSystem access game wide
 	
 	[SerializeField] private LayerMask mousePlaneLayerMask;
-	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
+	#endregion 
 	
 	
-	
-	// --------------------------------------------------------- ##### ------------------------------------------------------\\
-	#region ---------------------------------------------- Private Variables ------------------------------------------------
-	
+
+	#region Private Variables 
 	private Vector3 mousePosition;
 	private Vector2Int gridPosition;
 	private ShipUnit hoveredShip;
 	private ShipUnit selectedShip;
 	private HexTile hoveredHex;
-	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
+	#endregion 
 	
 	
 	
-	// --------------------------------------------------------- ##### ------------------------------------------------------\\
-    #region -------------------------------------------- MouseSystem Lifecycle ----------------------------------------------
-    
-	private void Awake() { Instance = this; }
+    #region MouseSystem Lifecycle 
+	private void Awake() 
+	{ 
+		Instance = this; 
+	}
 
 	private void FixedUpdate() 
 	{
+		// Get mouse position on screen, get gridposition and then store selected ship if there is one
 		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		gridPosition = HexGrid.Instance.GetGridPositionFromWorld(mousePosition);
 		selectedShip = GameController.Instance.GetSelectedShip();
 		
-		
+		// cast a ray over current mouse position to see if we are hitting a ship
 		if (!HexGrid.Instance.IsValidGridPosition(gridPosition)) {
 			RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, float.MaxValue, mousePlaneLayerMask);
 			
+			// if so store the hit ship in the hoveredShip variable
 			if(hit.collider != null)
 			{
 				hoveredShip = hit.collider.gameObject.TryGetComponent(out ShipUnit ship) ? ship : null; 
 			} 
 			else hoveredShip = null;
 			
+			// regardless of if there is a ship get the HexTile at this mouse position.
 			hoveredHex = HexGrid.Instance.GetHexTileAtPosition(gridPosition.x, gridPosition.y);
 		}
 	}
@@ -61,15 +57,11 @@ public class MouseSystem : MonoBehaviour
 		HandleHover();
 		HandClick();
 	}
-	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
+	#endregion
 	
 	
 	
-	// --------------------------------------------------------- ##### ------------------------------------------------------\\
-	#region ---------------------------------------------- MouseSystem Methods ----------------------------------------------
-	
+	#region MouseSystem Methods
 	private void HandleHover() 
 	{
 		// If hovering over ship
@@ -104,15 +96,13 @@ public class MouseSystem : MonoBehaviour
 			} else if (selectedShip != null)
 			{
 				// if clicking while not hovering a ship, mean you are clicking on tile. so set move target.
-				selectedShip.SetShipMoveTarget(hoveredHex);
+				selectedShip.GetMoveAction().SetShipMoveTarget(hoveredHex);
 			}
 			// Deselct ship hover after click not matter what.
 			GameController.Instance.SetHoveredShip(null);
 		}
 	}
-	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
+	#endregion
 	
 	
 	

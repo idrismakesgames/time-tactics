@@ -747,6 +747,14 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 573561518}
     m_Modifications:
+    - target: {fileID: 1663959243137552469, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
+      propertyPath: topSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663959243137552469, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
+      propertyPath: rotateSpeed
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 2123633729986192805, guid: 101927a3bfe59c540974bd5852395e3f, type: 3}
       propertyPath: m_Name
       value: ShipUnit 1

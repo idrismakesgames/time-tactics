@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-	// ------------------------------------------------------- ##### --------------------------------------------------------\\
-	#region ----------------------------------------- GameController Variables ----------------------------------------------
-	
+	#region GameController Variables
 	public static GameController Instance { get; private set; } // Singleton to allow GameController access game wide
 	
 	public event EventHandler OnHoveredHexChange;
@@ -19,25 +17,20 @@ public class GameController : MonoBehaviour
 	private HexTile selectedHexTile; // Selected Hex stored here to show visual
 	private ShipUnit hoveredShip; // Hovered Ship stored here to show visual
 	private ShipUnit selectedShip; // Selected Ship stored here to show visual
-	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
+	#endregion
 	
 	
 	
-	// ------------------------------------------------------- ##### --------------------------------------------------------\\
-    #region ----------------------------------------- GameController Lifecycle-----------------------------------------------
-    
-	private void Awake() { Instance = this; }
-	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
-	
+    #region GameController Lifecycle
+	private void Awake() 
+	{ 
+		Instance = this; 
+	}
+	#endregion/
 	
 	
-	// ------------------------------------------------------- ##### --------------------------------------------------------\\
-	#region ---------------------------------------- GameController Accessors -----------------------------------------------
 	
+	#region GameController Accessors
 	// Selected Tile Methods
 	public void SetSelectedHex(HexTile selectedHexTileObject) { selectedHexTile = selectedHexTileObject; }
 	
@@ -58,18 +51,16 @@ public class GameController : MonoBehaviour
 		OnSelectedShipChange?.Invoke(selectedShipObject, EventArgs.Empty);
 	}
 	
-	public ShipUnit GetSelectedShip() => selectedShip;
-	
 	public void SetHoveredShip(ShipUnit hoveredShipObject) 
 	{
 		hoveredShip = hoveredShipObject; 
 		OnHoveredShipChange?.Invoke(hoveredShipObject, EventArgs.Empty);
 	}
 	
-	public ShipUnit GetHoveredShip() => hoveredShip;
+	public ShipUnit GetSelectedShip() => selectedShip;
 	
-	#endregion --------------------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------------------------//
+	public ShipUnit GetHoveredShip() => hoveredShip;
+	#endregion
 	
 	
 	
