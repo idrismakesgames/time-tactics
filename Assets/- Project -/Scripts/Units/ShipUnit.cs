@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ShipUnit : MonoBehaviour
 {
@@ -74,17 +75,15 @@ public class ShipUnit : MonoBehaviour
 		
 		// Set selected ship if there is one.
 		selectedShip = GameController.Instance.GetSelectedShip();
-	}
-	
-	void Update()
-	{
-		selectedShip = GameController.Instance.GetSelectedShip();
-		SetSpriteBasedOnHoverSelected(selectedShip);
+		
+		// Subscribe to events where Hovered and Selected ship changes in the GameController.
+		GameController.Instance.OnHoveredShipChange += GameController_OnHoveredShipChange;
+		GameController.Instance.OnSelectedShipChange += GameController_OnSelectedShipChange;
 	}
 	
 	void FixedUpdate() 
 	{
-		// Method to check where ship is on the grid and then update which hextile it belongs in. (remove from current, add to another.)
+		// Method to check where ship is on the grid and then update which hextile it belongs in. 
 		Vector2Int latestGridPosition = HexGrid.Instance.GetGridPositionFromWorld(transform.position);
 		if (latestGridPosition != shipGridPosition) 
 		{
@@ -158,7 +157,7 @@ public class ShipUnit : MonoBehaviour
 			// Get movement step based on time passed since last frame, vs calculated duration from start.
 			float movementAmount = moveTimePassed / moveDuration;
 			
-			// TODO Implement Acceleration and deceleration on fixed time rather than ratio of distance
+			// IDRIS-TODO Implement Acceleration and deceleration on fixed time rather than ratio of distance
 			
 			// Move ship with towards top speed to do this.
 			rigidBody.MovePosition(Vector2.Lerp(shipStart, shipEnd, movementAmount));
@@ -182,7 +181,7 @@ public class ShipUnit : MonoBehaviour
 			// Get movement step based on time passed since last frame, vs calculated duration from start.
 			float rotateAmount = rotateTimePassed / rotateDuration;
 			
-			// TODO Implement Acceleration and deceleration on fixed time rather than ratio of distance
+			// IDRIS-TODO Implement Acceleration and deceleration on fixed time rather than ratio of distance
 			
 			// Rotate object based on rotate amount
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotationEnd, rotateAmount);
@@ -191,22 +190,23 @@ public class ShipUnit : MonoBehaviour
 			rotateTimePassed += Time.deltaTime;
 		}
 	}
+	
+	private void GameController_OnHoveredShipChange(object sender, EventArgs empty)  
+	{
+		SetSpriteBasedOnHoverSelected();
+	}
+	
+	private void GameController_OnSelectedShipChange(object sender, EventArgs empty)  
+	{
+		SetSpriteBasedOnHoverSelected();
+	}
 
-	private void SetSpriteBasedOnHoverSelected(ShipUnit selectedShip) 
+	private void SetSpriteBasedOnHoverSelected() 
 	{
 		// Set Ship sprrite based on hover or selected status in the Game Controller.
-		if (GameController.Instance.GetHoveredShip() == this) 
-		{
-			spriteRenderer.sprite = shipSpriteHovered; 
-		}
-		else if (selectedShip == this) 
-		{
-			spriteRenderer.sprite = shipSpriteSelected; 
-		}
-		else 
-		{
-			spriteRenderer.sprite = shipSprite; 
-		}
+		if		(GameController.Instance.GetHoveredShip() == this) spriteRenderer.sprite = shipSpriteHovered; 
+		else if (GameController.Instance.GetSelectedShip() == this) spriteRenderer.sprite = shipSpriteSelected; 
+		else	spriteRenderer.sprite = shipSprite; 
 	}
 	
 	#endregion ------------------------------------------------------------------------------------------------------------

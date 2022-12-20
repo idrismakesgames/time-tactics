@@ -1,13 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+
 
 public class GameController : MonoBehaviour
 {
-	// ------------------------------------------------------- START --------------------------------------------------------\\
+	// ------------------------------------------------------- ##### --------------------------------------------------------\\
 	#region ----------------------------------------- GameController Variables ----------------------------------------------
 	
 	public static GameController Instance { get; private set; } // Singleton to allow GameController access game wide
+	
+	public event EventHandler OnHoveredHexChange;
+	public event EventHandler OnHoveredShipChange;
+	public event EventHandler OnSelectedShipChange;
+	
 	private HexTile hoveredHexTile; // Hovered Hex stored here to show visual
 	private HexTile selectedHexTile; // Selected Hex stored here to show visual
 	private ShipUnit hoveredShip; // Hovered Ship stored here to show visual
@@ -18,7 +25,7 @@ public class GameController : MonoBehaviour
 	
 	
 	
-	// ------------------------------------------------------- START --------------------------------------------------------\\
+	// ------------------------------------------------------- ##### --------------------------------------------------------\\
     #region ----------------------------------------- GameController Lifecycle-----------------------------------------------
     
 	private void Awake() { Instance = this; }
@@ -28,7 +35,7 @@ public class GameController : MonoBehaviour
 	
 	
 	
-	// ------------------------------------------------------- START --------------------------------------------------------\\
+	// ------------------------------------------------------- ##### --------------------------------------------------------\\
 	#region ---------------------------------------- GameController Accessors -----------------------------------------------
 	
 	// Selected Tile Methods
@@ -36,16 +43,28 @@ public class GameController : MonoBehaviour
 	
 	public HexTile GetSelectedHex() => selectedHexTile;
 	
-	public void SetHoveredHex(HexTile hoveredHextileObject) { hoveredHexTile = hoveredHextileObject; }
+	public void SetHoveredHex(HexTile hoveredHextileObject) 
+	{ 
+		hoveredHexTile = hoveredHextileObject; 
+		OnHoveredHexChange?.Invoke(hoveredHextileObject, EventArgs.Empty);
+	}
 	
 	public HexTile GetHoveredHex() => hoveredHexTile;
 	
 	// Selected Ship Methods
-	public void SetSelectedShip(ShipUnit selectedShipObject) { selectedShip = selectedShipObject; }
+	public void SetSelectedShip(ShipUnit selectedShipObject) 
+	{
+		selectedShip = selectedShipObject; 
+		OnSelectedShipChange?.Invoke(selectedShipObject, EventArgs.Empty);
+	}
 	
 	public ShipUnit GetSelectedShip() => selectedShip;
 	
-	public void SetHoveredShip(ShipUnit hoveredShipObject) { hoveredShip = hoveredShipObject; }
+	public void SetHoveredShip(ShipUnit hoveredShipObject) 
+	{
+		hoveredShip = hoveredShipObject; 
+		OnHoveredShipChange?.Invoke(hoveredShipObject, EventArgs.Empty);
+	}
 	
 	public ShipUnit GetHoveredShip() => hoveredShip;
 	

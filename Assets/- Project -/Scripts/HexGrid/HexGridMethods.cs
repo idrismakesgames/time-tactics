@@ -62,9 +62,8 @@ public class HexGridMethods : MonoBehaviour
 		return gridPosition;
 	}
 	
-	public bool IsMousOffGrid(Vector2Int gridPosition)  
+	public bool IsValidGridPosition(Vector2Int gridPosition)  
 	{
-		Debug.Log(gridPosition);
 		// Safety check the x and y to not allow less than 0 or more than Max
 		if (gridPosition.x < 0) return true;
 		if (gridPosition.x >= HexGrid.Instance.GetRowLength()) return true;

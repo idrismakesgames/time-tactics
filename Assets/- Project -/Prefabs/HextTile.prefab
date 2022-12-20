@@ -101,7 +101,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 6301606107526459795}
   hexSprite: {fileID: 21300000, guid: bafaae007dbe8c74ea58dc85be43f44e, type: 3}
-  hexSpriteSelected: {fileID: 21300000, guid: 5895269ae25d8e942837bdafa6fc0aa0, type: 3}
+  hexSpriteHovered: {fileID: 21300000, guid: 5895269ae25d8e942837bdafa6fc0aa0, type: 3}
+  shipUnitOnTile: {fileID: 0}
 --- !u!60 &8797851830002424163
 PolygonCollider2D:
   m_ObjectHideFlags: 0

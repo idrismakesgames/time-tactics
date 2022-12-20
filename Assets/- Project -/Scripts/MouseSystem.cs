@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class MouseSystem : MonoBehaviour
 {
-	// --------------------------------------------------------- START ------------------------------------------------------\\
+	// --------------------------------------------------------- ##### ------------------------------------------------------\\
 	#region -------------------------------------------- MouseSystem Variables ----------------------------------------------
 	
 	public static MouseSystem Instance { get; private set; } // Singleton to allow MouseSystem access game wide
+	
+	[SerializeField] private LayerMask mousePlaneLayerMask;
 	
 	#endregion --------------------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------------------------//
 	
 	
 	
-	// --------------------------------------------------------- START ------------------------------------------------------\\
+	// --------------------------------------------------------- ##### ------------------------------------------------------\\
 	#region ---------------------------------------------- Private Variables ------------------------------------------------
 	
 	private Vector3 mousePosition;
@@ -28,7 +30,7 @@ public class MouseSystem : MonoBehaviour
 	
 	
 	
-	// --------------------------------------------------------- START ------------------------------------------------------\\
+	// --------------------------------------------------------- ##### ------------------------------------------------------\\
     #region -------------------------------------------- MouseSystem Lifecycle ----------------------------------------------
     
 	private void Awake() { Instance = this; }
@@ -40,14 +42,14 @@ public class MouseSystem : MonoBehaviour
 		selectedShip = GameController.Instance.GetSelectedShip();
 		
 		
-		if (!HexGrid.Instance.IsMousOffGrid(gridPosition)) {
-			RaycastHit2D hit = Physics2D.Raycast(mousePosition, -Vector2.up);
+		if (!HexGrid.Instance.IsValidGridPosition(gridPosition)) {
+			RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, float.MaxValue, mousePlaneLayerMask);
 			
 			if(hit.collider != null)
 			{
-				if (hit.collider.gameObject.TryGetComponent(out ShipUnit ship)) { hoveredShip = ship; } 
-				else { hoveredShip = null; }
-			}
+				hoveredShip = hit.collider.gameObject.TryGetComponent(out ShipUnit ship) ? ship : null; 
+			} 
+			else hoveredShip = null;
 			
 			hoveredHex = HexGrid.Instance.GetHexTileAtPosition(gridPosition.x, gridPosition.y);
 		}
@@ -65,7 +67,7 @@ public class MouseSystem : MonoBehaviour
 	
 	
 	
-	// --------------------------------------------------------- START ------------------------------------------------------\\
+	// --------------------------------------------------------- ##### ------------------------------------------------------\\
 	#region ---------------------------------------------- MouseSystem Methods ----------------------------------------------
 	
 	private void HandleHover() 

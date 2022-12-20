@@ -1,23 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using TMPro;
 
 public class HexTile : MonoBehaviour
 {
-	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	// ---------------------------------------------------- ##### ---------------------------------------------------------\\
     #region ------------------------------------- HexTile Editable Variables ----------------------------------------------
     
 	[SerializeField] private TextMeshPro textMeshPro; // Text to show Grid Coordinate
 	[SerializeField] private Sprite hexSprite; // Sprite for HexTile when not selected
-	[SerializeField] private Sprite hexSpriteSelected; // Sprite for HexTile when selected
+	[SerializeField] private Sprite hexSpriteHovered; // Sprite for HexTile when selected
 	
 	#endregion ------------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------------------//
 	
 	
 	
-	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	// ---------------------------------------------------- ##### ---------------------------------------------------------\\
     #region ------------------------------------- HexTile Private Variables -----------------------------------------------
     
 	private GameObject hexTileObject; // GameObject that was instantiated by HexGrid 
@@ -25,14 +26,14 @@ public class HexTile : MonoBehaviour
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
 	private Vector2 hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
 	
-	private ShipUnit shipUnitOnTile;
+	private ShipUnit shipUnitOnTile; // Store the ship that is over this tile if there is one.
 	
 	#endregion ------------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------------------//
 
 	
 	
-	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	// ---------------------------------------------------- ##### ---------------------------------------------------------\\
     #region ----------------------------------------- HexTile Lifecycle ---------------------------------------------------
     
 	private void Awake() 
@@ -40,10 +41,10 @@ public class HexTile : MonoBehaviour
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 	
-	private void Update() 
+	private void Start() 
 	{
-		// Check if this tile is the selected instance
-		spriteRenderer.sprite = GameController.Instance.GetHoveredHex() == this ? hexSpriteSelected : hexSprite;
+		// Subscribe to the event when a hovered hex changes from GameController
+		GameController.Instance.OnHoveredHexChange += GameController_OnHoveredHexChange;
 	}
 	
 	#endregion ------------------------------------------------------------------------------------------------------------
@@ -51,8 +52,14 @@ public class HexTile : MonoBehaviour
 	
 	
 	
-	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	// ---------------------------------------------------- ##### ---------------------------------------------------------\\
     #region ------------------------------------------ HexTile Methods ----------------------------------------------------
+    
+	private void GameController_OnHoveredHexChange(object sender, EventArgs empty) 
+	{
+		// When hovered tile is changed call this subscribed event
+		spriteRenderer.sprite = GameController.Instance.GetHoveredHex() == this ? hexSpriteHovered : hexSprite;
+	}
     
 	public void SetStartingValues(GameObject hexTileObj, Vector2 hexTileWorldPos, Vector2 hexTileGridPos) 
 	{
@@ -68,7 +75,7 @@ public class HexTile : MonoBehaviour
 	
 
 	    
-	// ---------------------------------------------------- START ---------------------------------------------------------\\
+	// ---------------------------------------------------- ##### ---------------------------------------------------------\\
     #region ----------------------------------------- HexTile Accessors ---------------------------------------------------
     
 	// HexTile related accessors
