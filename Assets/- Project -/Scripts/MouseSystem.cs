@@ -11,13 +11,15 @@ public class MouseSystem : MonoBehaviour
 	#endregion 
 	
 	
-
+	
 	#region Private Variables 
 	private Vector3 mousePosition;
 	private Vector2Int gridPosition;
 	private ShipUnit hoveredShip;
 	private ShipUnit selectedShip;
 	private HexTile hoveredHex;
+	
+	private List<Vector2Int> validHexMovePositionList;
 	#endregion 
 	
 	
@@ -26,6 +28,7 @@ public class MouseSystem : MonoBehaviour
 	private void Awake() 
 	{ 
 		Instance = this; 
+		validHexMovePositionList = new List<Vector2Int>();
 	}
 
 	private void FixedUpdate() 
@@ -35,8 +38,16 @@ public class MouseSystem : MonoBehaviour
 		gridPosition = HexGrid.Instance.GetGridPositionFromWorld(mousePosition);
 		selectedShip = GameController.Instance.GetSelectedShip();
 		
+		// Get Valid Grid position list for selected Unit
+		HexGrid.Instance.HideAllSelectedHexes();
+		if(selectedShip != null) 
+		{
+			validHexMovePositionList = selectedShip.GetMoveAction().GetValidHexPositionList();
+			HexGrid.Instance.ShowSelectedHexPositions(validHexMovePositionList);
+		}
+		
 		// cast a ray over current mouse position to see if we are hitting a ship
-		if (!HexGrid.Instance.IsValidGridPosition(gridPosition)) {
+		if (!HexGrid.Instance.IsInvalidGridPosition(gridPosition)) {
 			RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, float.MaxValue, mousePlaneLayerMask);
 			
 			// if so store the hit ship in the hoveredShip variable
@@ -96,14 +107,16 @@ public class MouseSystem : MonoBehaviour
 			} else if (selectedShip != null)
 			{
 				// if clicking while not hovering a ship, mean you are clicking on tile. so set move target.
-				selectedShip.GetMoveAction().SetShipMoveTarget(hoveredHex);
+				if (validHexMovePositionList.Contains(gridPosition))
+					// Only set if clicking within valid position list.
+					selectedShip.GetMoveAction().SetShipMoveTarget(hoveredHex);
+				
 			}
 			// Deselct ship hover after click not matter what.
 			GameController.Instance.SetHoveredShip(null);
 		}
 	}
 	#endregion
-	
 	
 	
 }

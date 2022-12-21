@@ -73,6 +73,26 @@ public class HexGrid : MonoBehaviour
 			}
 		}
 	}   
+	
+	public void ShowSelectedHexPositions(List<Vector2Int> validHexPositionList)
+	{
+		// Go through list of valid positions andset the alpha on the HexTile Sprite to full
+		foreach (Vector2Int validGridPosition in validHexPositionList)
+		{
+			hexTileArray[validGridPosition.x, validGridPosition.y].ShowValidHex();
+		}
+	}
+	
+	public void HideAllSelectedHexes() 
+	{
+		// Go through list of all Hexes set the alpha on the HexTile Sprite to default
+		for (int x = 0; x < GetRowLength(); x++) 
+		{
+			for (int y = 0; y < GetColHeight(); y++) {
+				hexTileArray[x, y].HideValidHex();
+			}
+		}
+	}
 	#endregion
 	
 	
@@ -94,7 +114,7 @@ public class HexGrid : MonoBehaviour
 	
 	public Vector3 GetWorldPositionFromGrid(int x, int y) => hexGridMethods.GetWorldPositionFromGrid(x, y);
 	
-	public bool IsValidGridPosition(Vector2Int gridPosition) => hexGridMethods.IsValidGridPosition(gridPosition);
+	public bool IsInvalidGridPosition(Vector2Int gridPosition) => hexGridMethods.IsInvalidGridPosition(gridPosition);
 	#endregion 
 	
 	

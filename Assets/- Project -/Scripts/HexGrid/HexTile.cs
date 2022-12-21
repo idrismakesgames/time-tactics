@@ -20,7 +20,11 @@ public class HexTile : MonoBehaviour
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
 	private Vector2 hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
 	
-	private ShipUnit shipUnitOnTile; // Store the ship that is over this tile if there is one.
+	public ShipUnit shipUnitOnTile; // Store the ship that is over this tile if there is one.
+	private bool isTarget; // Is this hex tile currently a ships target
+	
+	private Color movableColour;
+	private Color defaultColour;
 	#endregion
 
 	
@@ -29,6 +33,9 @@ public class HexTile : MonoBehaviour
 	private void Awake() 
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		defaultColour = spriteRenderer.color;
+		movableColour = defaultColour;
+		movableColour.a = 255f;
 	}
 	
 	private void Start() 
@@ -73,6 +80,32 @@ public class HexTile : MonoBehaviour
 	public void ClearShipUnit() { shipUnitOnTile = null; }
 	
 	public ShipUnit GetShipUnit() => shipUnitOnTile;
+	
+	// Target Variables
+	public bool GetIsTarget() => isTarget;
+	
+	public HexTile SetHexIsTarget() 
+	{
+		isTarget = true;
+		return this;
+	}
+	
+	public HexTile ClearHexIsTarget() 
+	{
+		isTarget = false;
+		return null;
+	}
+	
+	// Highlight Moveable Hexes
+	public void ShowValidHex() 
+	{
+		spriteRenderer.color = movableColour;
+	}
+	
+	public void HideValidHex() 
+	{
+		spriteRenderer.color = defaultColour;
+	}
 	#endregion
 	
 	

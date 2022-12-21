@@ -62,7 +62,7 @@ public class HexGridMethods : MonoBehaviour
 		return gridPosition;
 	}
 	
-	public bool IsValidGridPosition(Vector2Int gridPosition)  
+	public bool IsInvalidGridPosition(Vector2Int gridPosition)  
 	{
 		// Safety check the x and y to not allow less than 0 or more than Max
 		if (gridPosition.x < 0) return true;

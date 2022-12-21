@@ -19,6 +19,7 @@ public class ShipUnit : MonoBehaviour
 	private Vector2 shipWorldPosition; // Position in the world for the Ship 
 	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changeing
 	private HexTile hexTileInShipPosition; // HexTile in grid that this ship is currently on or over
+	
 	private MoveAction moveAction; // Move to Hex action that is assigned to a Unit
 	#endregion
 	
@@ -60,6 +61,8 @@ public class ShipUnit : MonoBehaviour
 			// And grab the new hex and update.
 			hexTileInShipPosition = HexGrid.Instance.GetHexTileAtPosition(latestGridPosition.x, latestGridPosition.y);
 			hexTileInShipPosition.SetShipUnit(this);
+			
+			shipGridPosition = latestGridPosition;
 		}
 	}
 	#endregion
@@ -89,9 +92,10 @@ public class ShipUnit : MonoBehaviour
 	
 
 	#region Ship Accessors
-	public MoveAction GetMoveAction() 
-	{
-		return moveAction;
-	}
+	public MoveAction GetMoveAction() => moveAction;
+	
+	public Vector2Int GetShipGridPosition() => shipGridPosition;
+	
+	public Vector3 GetShipWorldPosition() => shipWorldPosition;
 	#endregion
 }

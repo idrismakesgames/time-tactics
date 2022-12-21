@@ -7,26 +7,29 @@ public class MoveAction : MonoBehaviour
     #region MoveAction Editable Variables
 	[SerializeField] private float topSpeed; // Top speed for this ship 
 	[SerializeField] private float rotateSpeed; // Rotation speed for this ship 
+	[SerializeField] private int moveHexRange = 3; // Movement range of action on grid
 	#endregion
 	
 	
 
     #region MoveAction Private Variables
 	private Rigidbody2D rigidBody; // Store sprite renderer for quick changeing
+	private ShipUnit shipUnit; // The ship unit attached to the same gameobject as this action
 	private ShipUnit selectedShip; // Selected Ship as dictated from the GameController
 	private HexTile shipTarget; // Target for this ship to move towards
+	private bool isActive; // Is this overall mov action active
 	
 	private Vector2 shipStart; // Location of ship start location when moving
-	private Vector2 shipEnd; // Location of ship end location when moving.
+	private Vector2 shipEnd; // Location of ship end location when moving
 	private float moveDuration; // Time for move commands from ship to target
 	private float moveTimePassed; // Timing for when move is in progress
-	private bool shipIsMoving; // Is the ship moving
+	private bool isMoving; // Is the ship moving
 	
 	private Quaternion rotationStart; // Direction the ship before target selection
-	private Quaternion rotationEnd; // Direction the ship should be face based on last target.
+	private Quaternion rotationEnd; // Direction the ship should be face based on last target
 	private float rotateDuration; // Time for move commands from ship to target
 	private float rotateTimePassed; // Timing for when move is in progress
-	private bool shipIsRotating; // Is the ship rotating
+	private bool issRotating; // Is the ship rotating
 	#endregion
 	
 	
@@ -34,22 +37,35 @@ public class MoveAction : MonoBehaviour
     #region MoveAction Lifecycle
 	private void Awake() 
 	{
+		shipUnit = GetComponent<ShipUnit>();
 		rigidBody = GetComponent<Rigidbody2D>();
 	}
 
 	private void Start() 
 	{
-		// Set selected ship if there is one.
+		// Set selected ship if there is one
 		selectedShip = GameController.Instance.GetSelectedShip();
 	}
 	
 	void FixedUpdate()
-    {
-	    if (shipTarget)  {
-		    HandleShipMovement(); // Handle Ship movement now that target is valid.
-		    HandleShipRotation(); // Handle ship rotation towards target with speed.
-	    }
-    }
+	{
+		if (!isActive) return;
+		
+	    HandleShipMovement(); // Handle Ship movement now that target is valid
+		HandleShipRotation(); // Handle ship rotation towards target with speed
+	}
+    
+	private void Update() 
+	{
+		if (Input.GetKeyUp(KeyCode.T))
+		{
+			List<Vector2Int> validGridPositionLsit = GetValidHexPositionList();
+			foreach (Vector2Int gridPosition in validGridPositionLsit)
+			{
+				//Debug.Log(gridPosition);
+			}
+		}
+	}
 	#endregion
     
     
@@ -58,8 +74,42 @@ public class MoveAction : MonoBehaviour
 	public void SetShipMoveTarget(HexTile clickedHexTile) 
 	{
 		// Ship has just been assign target by MouseController
-		shipTarget = clickedHexTile;
+		shipTarget = clickedHexTile.SetHexIsTarget();
+		isActive = true;
 		SetMovementStart();
+		SetRotationStart();
+	}
+	
+	public List<Vector2Int> GetValidHexPositionList() 
+	{
+		List<Vector2Int> validHexPositionList = new List<Vector2Int>();
+		
+		// get current grid position
+		Vector2Int unitGridPosition = shipUnit.GetShipGridPosition();
+		
+		// Go through the neighbours to this position with the radius of the moveHexRange
+		for (int x = -moveHexRange; x <= moveHexRange; x++) 
+		{
+			for (int y = -moveHexRange; y <= moveHexRange; y++)
+			{
+				
+				// IDRIS-TODO FIGURE out maths to only get 3 step radius
+				Vector2Int testGridPosition = unitGridPosition + new Vector2Int(x, y);
+				
+				if (HexGrid.Instance.IsInvalidGridPosition(testGridPosition)) continue;
+				
+				if (unitGridPosition == testGridPosition) continue;
+				
+				//Check if hex tile has ship or is the target destination for a ship.
+				HexTile testTile = HexGrid.Instance.GetHexTileAtPosition(testGridPosition.x, testGridPosition.y);
+				if (testTile.GetIsTarget()) continue;
+				if (testTile.GetShipUnit() != null) continue;
+				
+				validHexPositionList.Add(testGridPosition);
+			}
+		}
+		
+		return validHexPositionList;
 	}
 	#endregion
 	
@@ -75,9 +125,7 @@ public class MoveAction : MonoBehaviour
 		
 		// Initialize time passed that will start now that target has been assigned.
 		moveTimePassed = 0f;
-		shipIsMoving = true;
-		
-		SetRotationStart();
+		isMoving = true;
 	}
 	
 	private void HandleShipMovement() 
@@ -86,12 +134,13 @@ public class MoveAction : MonoBehaviour
 		{
 			// If the ship has gone through its time period. snap position and remove target
 			rigidBody.MovePosition(shipEnd);
-			shipIsMoving = false;
+			isMoving = false;
 			
 			// If rotating job is done then remove ship target
-			if (shipIsRotating == false) 
+			if (issRotating == false) 
 			{
-				shipTarget = null; 
+				if (shipTarget) shipTarget = shipTarget.ClearHexIsTarget(); 
+				isActive = false;
 			}
 		} 
 		else 
@@ -123,7 +172,7 @@ public class MoveAction : MonoBehaviour
 		
 		// Initialize rotation time passed that will start now that target has been assigned.
 		rotateTimePassed = 0f;
-		shipIsRotating = true;
+		issRotating = true;
 	}
 	
 	private void HandleShipRotation() 
@@ -132,12 +181,13 @@ public class MoveAction : MonoBehaviour
 		{
 			// If the ship rotation has gone through its time period. snap rotation
 			transform.rotation = rotationEnd;
-			shipIsRotating = false;
+			issRotating = false;
 			
 			// If moving job is done then remove ship target
-			if (shipIsMoving == false) 
+			if (isMoving == false) 
 			{ 
-				shipTarget = null; 
+				if (shipTarget) shipTarget = shipTarget.ClearHexIsTarget(); 
+				isActive =false;
 			}
 		} 
 		else 

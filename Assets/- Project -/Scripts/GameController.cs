@@ -49,6 +49,8 @@ public class GameController : MonoBehaviour
 	{
 		selectedShip = selectedShipObject; 
 		OnSelectedShipChange?.Invoke(selectedShipObject, EventArgs.Empty);
+		
+		// Get move action from selected ship and recalculate valid grid positions
 	}
 	
 	public void SetHoveredShip(ShipUnit hoveredShipObject) 
