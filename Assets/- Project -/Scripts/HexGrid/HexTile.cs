@@ -10,15 +10,14 @@ public class HexTile : MonoBehaviour
 	[SerializeField] private TextMeshPro textMeshPro; // Text to show Grid Coordinate
 	[SerializeField] private Sprite hexSprite; // Sprite for HexTile when not selected
 	[SerializeField] private Sprite hexSpriteHovered; // Sprite for HexTile when selected
+	[SerializeField] private Vector2Int hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
 	#endregion
 	
 	
 
     #region HexTile Private Variables
-	private GameObject hexTileObject; // GameObject that was instantiated by HexGrid 
 	private SpriteRenderer spriteRenderer; // Store sprite renderer for qwuick changeing.
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
-	private Vector2 hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
 	
 	public ShipUnit shipUnitOnTile; // Store the ship that is over this tile if there is one.
 	private bool isTarget; // Is this hex tile currently a ships target
@@ -40,6 +39,12 @@ public class HexTile : MonoBehaviour
 	
 	private void Start() 
 	{
+		// Get Hextile World Position
+		hexTileWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(hexTileGridPosition.x, hexTileGridPosition.y);
+		
+		// Set hextile default name for gameobject
+		textMeshPro.text = $"{(int)Mathf.Round(hexTileGridPosition.x)}-{(int)Mathf.Round(hexTileGridPosition.y)}";
+		
 		// Subscribe to the event when a hovered hex changes from GameController
 		GameController.Instance.OnHoveredHexChange += GameController_OnHoveredHexChange;
 	}
@@ -54,10 +59,9 @@ public class HexTile : MonoBehaviour
 		spriteRenderer.sprite = GameController.Instance.GetHoveredHex() == this ? hexSpriteHovered : hexSprite;
 	}
     
-	public void SetStartingValues(GameObject hexTileObj, Vector2 hexTileWorldPos, Vector2 hexTileGridPos) 
+	public void SetStartingValues(Vector2 hexTileWorldPos, Vector2Int hexTileGridPos) 
 	{
 		// Set the GameObject, Position, Coordinate, and Text.
-		hexTileObject = hexTileObj;
 		hexTileWorldPosition = hexTileWorldPos;
 		hexTileGridPosition = hexTileGridPos;
 		textMeshPro.text = $"{(int)Mathf.Round(hexTileGridPos.x)}-{(int)Mathf.Round(hexTileGridPos.y)}";
@@ -68,8 +72,6 @@ public class HexTile : MonoBehaviour
 	    
     #region HexTile Accessors
 	// HexTile related accessors
-	public GameObject GetHexTileObject() => this.hexTileObject;
-
 	public Vector2 GetWorldPosition() => this.hexTileWorldPosition;
 	
 	public Vector2 GetGridPosition() => this.hexTileGridPosition;

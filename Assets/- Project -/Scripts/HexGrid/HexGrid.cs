@@ -7,6 +7,8 @@ public class HexGrid : MonoBehaviour
     #region HexGrid Variables
 	public static HexGrid Instance { get; private set; } // Singleton to allow HexGrid access game wide
 	
+	public bool GenerateTheGrid;
+	
 	[SerializeField] private HexTile hexTileObject;  // HexTile object to get sprite info from
 	[SerializeField] private float widthOffset; // Row spacing for hex
 	[SerializeField] private float heightOffset; // Column spacing for hex
@@ -17,7 +19,7 @@ public class HexGrid : MonoBehaviour
 	
     #region HexGrid Private Variables
 	private HexGridMethods hexGridMethods; // Grid methods asset to help clean code
-	private HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
+	public HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
 	
 	private Sprite hexTileSprite; // Sprite for hexTile to get gaps
 	private float widthGap; // Horizontal spacing based on Sprite
@@ -41,12 +43,14 @@ public class HexGrid : MonoBehaviour
 		// Set the sprite to get the width and height for grid generation
 		widthGap = (hexTileSprite.bounds.extents.x * 2f) + widthOffset;
 		heightGap = (hexTileSprite.bounds.extents.y * 1.5f) + heightOffset;
+		
+		Debug.Log("xBounds: " + hexTileSprite.bounds.extents.x + " yBounds: " + hexTileSprite.bounds.extents.y + " widthOffset: " + widthOffset + " heightOffset: " + heightOffset);
 	
 		// Instance the array that will hold all the HexGrid Tiles
 		hexTileArray = new HexTile[rowLength, colHeight];
 		
-		// Generate the HexGrid
-		GenerateHexGrid();
+		if (GenerateTheGrid) GenerateHexGrid();
+		else				 ReadInGrid();
 	}
 	#endregion
 
@@ -64,7 +68,7 @@ public class HexGrid : MonoBehaviour
 				
 				// Instantiate HexTile Prefab using Ref, Set Values + Name, and Attach to Grid as Child
 				HexTile hexTileInstance = Instantiate(hexTileObject, tilePosition,  Quaternion.identity);
-				hexTileInstance.SetStartingValues(hexTileInstance.gameObject, new Vector2(tilePosition.x, tilePosition.y), new Vector2(x, y));
+				hexTileInstance.SetStartingValues(new Vector2(tilePosition.x, tilePosition.y), new Vector2Int(x, y));
 				hexTileInstance.name = $"HexTile {x}-{y}";
 				hexTileInstance.transform.parent =  this.transform;
 				
@@ -73,6 +77,20 @@ public class HexGrid : MonoBehaviour
 			}
 		}
 	}   
+	
+	private void ReadInGrid() 
+	{
+		// READ In Grid already Spawned
+		for (int x = 0; x < rowLength; x++) 
+		{
+			for (int y = 0; y < colHeight; y++) 
+			{
+				// Store hexTile that is currently a child in each correct slot.
+				HexTile[] childTiles = this.GetComponentsInChildren<HexTile>();
+				hexTileArray[x, y] = childTiles[x*20 + y];
+			}
+		}
+	}
 	
 	public void ShowSelectedHexPositions(List<Vector2Int> validHexPositionList)
 	{
