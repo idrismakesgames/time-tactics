@@ -94,7 +94,7 @@ public class HexGrid : MonoBehaviour
 	
 	public void ShowSelectedHexPositions(List<Vector2Int> validHexPositionList)
 	{
-		// Go through list of valid positions andset the alpha on the HexTile Sprite to full
+		// Go through list of valid positions and set the alpha on the HexTile Sprite to full
 		foreach (Vector2Int validGridPosition in validHexPositionList)
 		{
 			hexTileArray[validGridPosition.x, validGridPosition.y].ShowValidHex();

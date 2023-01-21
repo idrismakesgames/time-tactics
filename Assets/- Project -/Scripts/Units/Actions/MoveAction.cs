@@ -86,19 +86,25 @@ public class MoveAction : MonoBehaviour
 		
 		// get current grid position
 		Vector2Int unitGridPosition = shipUnit.GetShipGridPosition();
+		Vector2 unitWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(unitGridPosition.x, unitGridPosition.y);
 		
+		// Get max distance based on hex width and current position
+		float maxDistance = HexGrid.Instance.GetWidthGap() * moveHexRange;
+
 		// Go through the neighbours to this position with the radius of the moveHexRange
 		for (int x = -moveHexRange; x <= moveHexRange; x++) 
 		{
 			for (int y = -moveHexRange; y <= moveHexRange; y++)
 			{
-				
-				// IDRIS-TODO FIGURE out maths to only get 3 step radius
 				Vector2Int testGridPosition = unitGridPosition + new Vector2Int(x, y);
+				Vector2 testWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(testGridPosition.x, testGridPosition.y);
 				
 				if (HexGrid.Instance.IsInvalidGridPosition(testGridPosition)) continue;
 				
 				if (unitGridPosition == testGridPosition) continue;
+				
+				//// Get tiles that that aren't over the diagonal distance to make steps accurate.
+				if (Vector2.Distance(unitWorldPosition, testWorldPosition) > maxDistance) continue;
 				
 				//Check if hex tile has ship or is the target destination for a ship.
 				HexTile testTile = HexGrid.Instance.GetHexTileAtPosition(testGridPosition.x, testGridPosition.y);
