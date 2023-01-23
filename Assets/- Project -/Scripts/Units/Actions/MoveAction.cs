@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class MoveAction : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class MoveAction : MonoBehaviour
 	private float rotateDuration; // Time for move commands from ship to target
 	private float rotateTimePassed; // Timing for when move is in progress
 	private bool issRotating; // Is the ship rotating
+	
+	private List<Vector2Int> validHexPositionList; // The position list for this move action based on ship unit grid possition
 	#endregion
 	
 	
@@ -45,6 +48,9 @@ public class MoveAction : MonoBehaviour
 	{
 		// Set selected ship if there is one
 		selectedShip = GameController.Instance.GetSelectedShip();
+		
+		shipUnit.OnSelectedShipChange += ShipUnit_OnSelectedShipChange;
+		GenerateValidPositions();
 	}
 	
 	void FixedUpdate()
@@ -80,16 +86,21 @@ public class MoveAction : MonoBehaviour
 		SetRotationStart();
 	}
 	
-	public List<Vector2Int> GetValidHexPositionList() 
+	private void ShipUnit_OnSelectedShipChange(object sender, EventArgs empty) 
 	{
-		List<Vector2Int> validHexPositionList = new List<Vector2Int>();
+		GenerateValidPositions();
+	}
+	
+	private List<Vector2Int> GenerateValidPositions()
+	{
+		List<Vector2Int> validPositionList = new List<Vector2Int>();
 		
 		// get current grid position
 		Vector2Int unitGridPosition = shipUnit.GetShipGridPosition();
 		Vector2 unitWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(unitGridPosition.x, unitGridPosition.y);
 		
-		// Get max distance based on hex width and current position
-		float maxDistance = HexGrid.Instance.GetWidthGap() * moveHexRange;
+		// Get max distance based on hex width and current position (add 0.1 buffer for the pixel edge cases)
+		float maxDistance = (HexGrid.Instance.GetWidthGap() * moveHexRange) + 0.1f;
 
 		// Go through the neighbours to this position with the radius of the moveHexRange
 		for (int x = -moveHexRange; x <= moveHexRange; x++) 
@@ -103,20 +114,24 @@ public class MoveAction : MonoBehaviour
 				
 				if (unitGridPosition == testGridPosition) continue;
 				
-				//// Get tiles that that aren't over the diagonal distance to make steps accurate.
-				if (Vector2.Distance(unitWorldPosition, testWorldPosition) > maxDistance) continue;
-				
 				//Check if hex tile has ship or is the target destination for a ship.
 				HexTile testTile = HexGrid.Instance.GetHexTileAtPosition(testGridPosition.x, testGridPosition.y);
 				if (testTile.GetIsTarget()) continue;
 				if (testTile.GetShipUnit() != null) continue;
-				
-				validHexPositionList.Add(testGridPosition);
+				// Get tiles that that aren't over the diagonal distance to make steps accurate.
+
+				if (Vector2.Distance(unitWorldPosition, testWorldPosition) > maxDistance) continue;
+
+
+				validPositionList.Add(testGridPosition);
 			}
 		}
 		
+		validHexPositionList = validPositionList;
 		return validHexPositionList;
 	}
+	
+	public List<Vector2Int> GetValidHexPositionList() => validHexPositionList;
 	#endregion
 	
 	

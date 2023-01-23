@@ -15,6 +15,12 @@ public class ShipUnit : MonoBehaviour
 	
 	
 	
+    #region MoveAction Public Variables
+	public event EventHandler OnSelectedShipChange;
+	#endregion
+	
+	
+	
     #region Ship Private Variables
 	private Vector2 shipWorldPosition; // Position in the world for the Ship 
 	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changeing
@@ -62,7 +68,10 @@ public class ShipUnit : MonoBehaviour
 			hexTileInShipPosition = HexGrid.Instance.GetHexTileAtPosition(latestGridPosition.x, latestGridPosition.y);
 			hexTileInShipPosition.SetShipUnit(this);
 			
+			
+			// When ship does move from one hex to another, call an event that will assign to generate new valid positions.
 			shipGridPosition = latestGridPosition;
+			OnSelectedShipChange?.Invoke(this, EventArgs.Empty);
 		}
 	}
 	#endregion
