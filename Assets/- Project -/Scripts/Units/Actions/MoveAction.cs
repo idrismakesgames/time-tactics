@@ -119,7 +119,6 @@ public class MoveAction : MonoBehaviour
 				if (testTile.GetIsTarget()) continue;
 				if (testTile.GetShipUnit() != null) continue;
 				// Get tiles that that aren't over the diagonal distance to make steps accurate.
-
 				if (Vector2.Distance(unitWorldPosition, testWorldPosition) > maxDistance) continue;
 
 
