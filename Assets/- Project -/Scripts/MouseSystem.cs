@@ -1,25 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
+using System;
 
 public class MouseSystem : MonoBehaviour
 {
 	#region MouseSystem Variables 
 	public static MouseSystem Instance { get; private set; } // Singleton to allow MouseSystem access game wide
 	
-	[SerializeField] private LayerMask mousePlaneLayerMask;
+	[SerializeField] private LayerMask mousePlaneLayerMask; // Layer that the ships are on for collision detection
+	
+	public Path path; // Current path to show based on hovering
 	#endregion 
 	
 	
 	
 	#region Private Variables 
-	private Vector3 mousePosition;
-	private Vector2Int gridPosition;
-	private ShipUnit hoveredShip;
-	private ShipUnit selectedShip;
-	private HexTile hoveredHex;
+	private Vector3 mousePosition; // Mouse position on screen
+	private Vector2Int gridPosition; // Grid position of mouse if valid
+	private ShipUnit hoveredShip; // If hovering over a ship store here otherwise set to null (stored in game controller too)
+	private ShipUnit selectedShip; // If clicked on a ship store this here (stored in gamecontroller too)
+	private HexTile hoveredHex; // If hovering over a hex set to here otherwise null (stored in game controller too)
 	
-	private List<Vector2Int> validHexMovePositionList;
+	private List<Vector2Int> validHexMovePositionList; // Where can a ship move to based on its range will be stored here for use
+	
+	private Seeker seeker; // Pathfinding helper that will generate path between targets for us.
 	#endregion 
 	
 	
@@ -29,6 +35,14 @@ public class MouseSystem : MonoBehaviour
 	{ 
 		Instance = this; 
 		validHexMovePositionList = new List<Vector2Int>();
+	}
+	
+	private void Start() 
+	{
+		// Seeker that will activate the pathfinding from the grid object in the scene.
+		seeker = GetComponent<Seeker>();
+		// Subscribe to the event when a hovered hex changes from GameController
+		GameController.Instance.OnHoveredHexChange += GameController_OnHoveredHexChange;
 	}
 
 	private void FixedUpdate() 
@@ -80,7 +94,7 @@ public class MouseSystem : MonoBehaviour
 		{
 			// If not hovering over selected ship, set the hover graphic
 			if (hoveredShip != selectedShip) { 
-				GameController.Instance.SetHoveredShip(hoveredShip); 
+				if (GameController.Instance.GetHoveredShip() != hoveredShip) GameController.Instance.SetHoveredShip(hoveredShip); 
 			} else 
 			{
 				// Otherwise show the selected graphic
@@ -92,8 +106,9 @@ public class MouseSystem : MonoBehaviour
 		else 
 		{
 			// Else hover hex
-			GameController.Instance.SetHoveredHex(hoveredHex);
-			GameController.Instance.SetHoveredShip(null);
+			if (GameController.Instance.GetHoveredHex() != hoveredHex) GameController.Instance.SetHoveredHex(hoveredHex);
+			
+			if (GameController.Instance.GetHoveredShip() != null) GameController.Instance.SetHoveredShip(null);
 		}
 	}
 	
@@ -118,5 +133,35 @@ public class MouseSystem : MonoBehaviour
 	}
 	#endregion
 	
+	
+	
+	#region MouseSystem Events	
+	private void GameController_OnHoveredHexChange(object sender, EventArgs empty) 
+	{
+		// If hovering over valid hex position list entry, generate path.
+		HexTile senderTile = (HexTile) sender;
+		if (senderTile) {
+			Debug.Log("changing hover tile" + senderTile.GetGridPosition());
+			
+			// if there is a selected ship and a valid hex position is present generate path.
+			if (selectedShip != null && validHexMovePositionList.Contains(new Vector2Int((int)senderTile.GetGridPosition().x, (int)senderTile.GetGridPosition().y))) 
+			{
+				// Generate paht using seeker and store
+				seeker.StartPath(selectedShip.GetShipWorldPosition(), senderTile.GetWorldPosition(), OnPathComplete);
+			}
+		}
+	}
+	
+	public void OnPathComplete(Path p)
+	{
+		Debug.Log("Yay, we got a path back. Did it have an error?" + p.error);
+		Debug.Log(p.path.Count);
+		Debug.Log(p.vectorPath.Count);
+		if (!p.error) 
+		{
+			path = p;
+		}
+	}
+	#endregion
 	
 }

@@ -71,6 +71,7 @@ public class ShipUnit : MonoBehaviour
 			
 			// When ship does move from one hex to another, call an event that will assign to generate new valid positions.
 			shipGridPosition = latestGridPosition;
+			shipWorldPosition = transform.position;
 			OnSelectedShipChange?.Invoke(this, EventArgs.Empty);
 		}
 	}
