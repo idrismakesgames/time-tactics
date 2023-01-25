@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/- Project -/Scenes/TimeTactics.unity
+    path: Assets/- Project -/Scenes/TimeTactics - Hexgrid Pathfinding.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
