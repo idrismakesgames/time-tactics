@@ -1,36 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using System;
 
 public class MouseSystem : MonoBehaviour
 {
-	#region MouseSystem Variables 
-	public static MouseSystem Instance { get; private set; } // Singleton to allow MouseSystem access game wide
+	#region Variables 
+	// ReSharper disable once UnusedAutoPropertyAccessor.Local
+	private static MouseSystem Instance { get; set; } // Singleton to allow MouseSystem access game wide
+	private Path path; // Current path to show based on hovering
 	
 	[SerializeField] private LayerMask mousePlaneLayerMask; // Layer that the ships are on for collision detection
-	
-	public Path path; // Current path to show based on hovering
-	#endregion 
-	
-	
-	
-	#region Private Variables 
+
 	private Vector3 mousePosition; // Mouse position on screen
 	private Vector2Int gridPosition; // Grid position of mouse if valid
 	private ShipUnit hoveredShip; // If hovering over a ship store here otherwise set to null (stored in game controller too)
-	private ShipUnit selectedShip; // If clicked on a ship store this here (stored in gamecontroller too)
+	private ShipUnit selectedShip; // If clicked on a ship store this here (stored in GameController too)
 	private HexTile hoveredHex; // If hovering over a hex set to here otherwise null (stored in game controller too)
 	
 	private List<Vector2Int> validHexMovePositionList; // Where can a ship move to based on its range will be stored here for use
 	
 	private Seeker seeker; // Pathfinding helper that will generate path between targets for us.
-	#endregion 
-	
-	
-	
-    #region MouseSystem Lifecycle 
+	#endregion
+
+	#region Lifecycle 
 	private void Awake() 
 	{ 
 		Instance = this; 
@@ -47,8 +40,8 @@ public class MouseSystem : MonoBehaviour
 
 	private void FixedUpdate() 
 	{
-		// Get mouse position on screen, get gridposition and then store selected ship if there is one
-		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		// Get mouse position on screen, get GridPosition and then store selected ship if there is one
+		if (Camera.main != null) mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		gridPosition = HexGrid.Instance.GetGridPositionFromWorld(mousePosition);
 		selectedShip = GameController.Instance.GetSelectedShip();
 		
@@ -98,7 +91,7 @@ public class MouseSystem : MonoBehaviour
 			} else 
 			{
 				// Otherwise show the selected graphic
-				GameController.Instance.SetHoveredShip(null); ;
+				GameController.Instance.SetHoveredShip(null); 
 			}
 			// Dont show any hex as hovering as over ship right now.
 			GameController.Instance.SetHoveredHex(null);
@@ -134,7 +127,7 @@ public class MouseSystem : MonoBehaviour
 					selectedShip.GetMoveAction().SetShipMoveTarget(hoveredHex, path);
 				}
 			}
-			// Deselct ship hover after click not matter what.
+			// Deselect ship hover after click not matter what.
 			GameController.Instance.SetHoveredShip(null);
 		}
 	}
@@ -151,13 +144,13 @@ public class MouseSystem : MonoBehaviour
 			// if there is a selected ship and a valid hex position is present generate path.
 			if (selectedShip != null && validHexMovePositionList.Contains(new Vector2Int((int)senderTile.GetGridPosition().x, (int)senderTile.GetGridPosition().y))) 
 			{
-				// Generate paht using seeker and store
+				// Generate path using seeker and store
 				seeker.StartPath(selectedShip.GetShipWorldPosition(), senderTile.GetWorldPosition(), OnPathComplete);
 			}
 		}
 	}
 	
-	public void OnPathComplete(Path p)
+	private void OnPathComplete(Path p)
 	{
 		if (!p.error) 
 		{

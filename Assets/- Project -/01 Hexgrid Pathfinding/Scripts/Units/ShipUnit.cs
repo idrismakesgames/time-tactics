@@ -1,37 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public class ShipUnit : MonoBehaviour
 {
-    #region Ship Editable Variables 
+    #region Variables 
 	[SerializeField] private Sprite shipSprite; // Sprite for Ship when not selected
 	[SerializeField] private Sprite shipSpriteHovered; // Sprite for Ship when selected
 	[SerializeField] private Sprite shipSpriteSelected; // Sprite for Ship when selected
 	
 	[SerializeField] private Vector2Int shipGridPosition; // Starting grid position for this ship
-	#endregion
-	
-	
-	
-    #region MoveAction Public Variables
+
 	public event EventHandler OnSelectedShipChange;
-	#endregion
-	
-	
-	
-    #region Ship Private Variables
 	private Vector2 shipWorldPosition; // Position in the world for the Ship 
-	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changeing
+	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changing
 	private HexTile hexTileInShipPosition; // HexTile in grid that this ship is currently on or over
 	
 	private MoveAction moveAction; // Move to Hex action that is assigned to a Unit
 	#endregion
-	
-	
 
-    #region Ship Lifecycle
+	#region Lifecycle
 	private void Awake() 
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -46,7 +33,7 @@ public class ShipUnit : MonoBehaviour
 		shipWorldPosition.x = worldPosition.x;
 		shipWorldPosition.y = worldPosition.y;
 		
-		// Get the Hextile from GridPosition and set its players
+		// Get the HexTile from GridPosition and set its players
 		hexTileInShipPosition = HexGrid.Instance.GetHexTileAtPosition(shipGridPosition.x, shipGridPosition.y);
 		hexTileInShipPosition.SetShipUnit(this);
 		
@@ -57,7 +44,7 @@ public class ShipUnit : MonoBehaviour
 	
 	void FixedUpdate() 
 	{
-		// Method to check where ship is on the grid and then update which hextile it belongs in. 
+		// Method to check where ship is on the grid and then update which HexTile it belongs in. 
 		Vector2Int latestGridPosition = HexGrid.Instance.GetGridPositionFromWorld(transform.position);
 		if (latestGridPosition != shipGridPosition) 
 		{
@@ -71,15 +58,23 @@ public class ShipUnit : MonoBehaviour
 			
 			// When ship does move from one hex to another, call an event that will assign to generate new valid positions.
 			shipGridPosition = latestGridPosition;
-			shipWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(shipGridPosition.x, shipGridPosition.y);;
+			shipWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(shipGridPosition.x, shipGridPosition.y);
 			OnSelectedShipChange?.Invoke(this, EventArgs.Empty);
 		}
 	}
 	#endregion
-	
-	
-	
+
 	#region Ship Methods
+	private void SetSpriteBasedOnHoverSelected() 
+	{
+		// Set Ship sprite based on hover or selected status in the Game Controller.
+		if		(GameController.Instance.GetHoveredShip() == this) spriteRenderer.sprite = shipSpriteHovered; 
+		else if (GameController.Instance.GetSelectedShip() == this) spriteRenderer.sprite = shipSpriteSelected; 
+		else	spriteRenderer.sprite = shipSprite; 
+	}
+	#endregion
+
+	#region Events
 	private void GameController_OnHoveredShipChange(object sender, EventArgs empty)  
 	{
 		SetSpriteBasedOnHoverSelected();
@@ -89,18 +84,8 @@ public class ShipUnit : MonoBehaviour
 	{
 		SetSpriteBasedOnHoverSelected();
 	}
-
-	private void SetSpriteBasedOnHoverSelected() 
-	{
-		// Set Ship sprrite based on hover or selected status in the Game Controller.
-		if		(GameController.Instance.GetHoveredShip() == this) spriteRenderer.sprite = shipSpriteHovered; 
-		else if (GameController.Instance.GetSelectedShip() == this) spriteRenderer.sprite = shipSpriteSelected; 
-		else	spriteRenderer.sprite = shipSprite; 
-	}
 	#endregion
 	
-	
-
 	#region Ship Accessors
 	public MoveAction GetMoveAction() => moveAction;
 	

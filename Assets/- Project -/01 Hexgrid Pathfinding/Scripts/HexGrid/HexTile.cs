@@ -1,24 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using TMPro;
 
 public class HexTile : MonoBehaviour
 {
-    #region HexTile Editable Variables
+    #region Variables
 	[SerializeField] private TextMeshPro textMeshPro; // Text to show Grid Coordinate
 	[SerializeField] private Sprite hexSprite; // Sprite for HexTile when not selected
 	[SerializeField] private Sprite hexSpriteHovered; // Sprite for HexTile when selected
 	[SerializeField] private Vector2Int hexTileGridPosition; // Grid Coordinate as defined during HexGridGeneration.
-	
 	[SerializeField] private bool isObstacle; // Is this hexTile an obstacle.
-	#endregion
-	
-	
 
-    #region HexTile Private Variables
-	private SpriteRenderer spriteRenderer; // Store sprite renderer for qwuick changeing.
+	private SpriteRenderer spriteRenderer; // Store sprite renderer for quick changing.
 	private Vector2 hexTileWorldPosition; // Position in the world this was instantiated
 	
 	public ShipUnit shipUnitOnTile; // Store the ship that is over this tile if there is one.
@@ -28,9 +21,7 @@ public class HexTile : MonoBehaviour
 	private Color defaultColour;
 	#endregion
 
-	
-
-    #region HexTile Lifecycle
+	#region Lifecycle
 	private void Awake() 
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -41,10 +32,10 @@ public class HexTile : MonoBehaviour
 	
 	private void Start() 
 	{
-		// Get Hextile World Position
+		// Get HexTile World Position
 		hexTileWorldPosition = HexGrid.Instance.GetWorldPositionFromGrid(hexTileGridPosition.x, hexTileGridPosition.y);
 		
-		// Set hextile default name for gameobject
+		// Set HexTile default name for GameObject
 		textMeshPro.text = $"{(int)Mathf.Round(hexTileGridPosition.x)}-{(int)Mathf.Round(hexTileGridPosition.y)}";
 		
 		// Subscribe to the event when a hovered hex changes from GameController
@@ -52,16 +43,8 @@ public class HexTile : MonoBehaviour
 	}
 	#endregion
 	
-	
-	
-    #region HexTile Methods
-	private void GameController_OnHoveredHexChange(object sender, EventArgs empty) 
-	{
-		// When hovered tile is changed call this subscribed event
-		spriteRenderer.sprite = GameController.Instance.GetHoveredHex() == this ? hexSpriteHovered : hexSprite;
-	}
-    
-	public void SetStartingValues(Vector2 hexTileWorldPos, Vector2Int hexTileGridPos) 
+    #region Methods
+    public void SetStartingValues(Vector2 hexTileWorldPos, Vector2Int hexTileGridPos) 
 	{
 		// Set the GameObject, Position, Coordinate, and Text.
 		hexTileWorldPosition = hexTileWorldPos;
@@ -70,15 +53,21 @@ public class HexTile : MonoBehaviour
 	}
 	#endregion
 	
+	#region Events
+	private void GameController_OnHoveredHexChange(object sender, EventArgs empty) 
+	{
+		// When hovered tile is changed call this subscribed event
+		spriteRenderer.sprite = GameController.Instance.GetHoveredHex() == this ? hexSpriteHovered : hexSprite;
+	}
+	#endregion
 
-	    
-    #region HexTile Accessors
+	#region Accessors
 	// HexTile related accessors
 	public Vector2 GetWorldPosition() => this.hexTileWorldPosition;
 	
 	public Vector2 GetGridPosition() => this.hexTileGridPosition;
 	
-	// ShipUnit releated Accessors
+	// ShipUnit related Accessors
 	public void SetShipUnit(ShipUnit shipUnit)  { shipUnitOnTile = shipUnit; }
 	
 	public void ClearShipUnit() { shipUnitOnTile = null; }
@@ -100,7 +89,7 @@ public class HexTile : MonoBehaviour
 		return null;
 	}
 	
-	// Highlight Moveable Hexes
+	// Highlight Movable Hexes
 	public void ShowValidHex() 
 	{
 		spriteRenderer.color = movableColour;
@@ -113,7 +102,4 @@ public class HexTile : MonoBehaviour
 	
 	public bool GetIsObstacle() => isObstacle;
 	#endregion
-	
-	
-
 }

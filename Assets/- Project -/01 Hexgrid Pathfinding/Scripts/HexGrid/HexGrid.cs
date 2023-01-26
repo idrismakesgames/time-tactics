@@ -1,34 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HexGrid : MonoBehaviour
 {
-    #region HexGrid Variables
+    #region Variables
 	public static HexGrid Instance { get; private set; } // Singleton to allow HexGrid access game wide
-	
-	public bool GenerateTheGrid;
+	public bool generateTheGrid;
 	
 	[SerializeField] private HexTile hexTileObject;  // HexTile object to get sprite info from
 	[SerializeField] private float widthOffset; // Row spacing for hex
 	[SerializeField] private float heightOffset; // Column spacing for hex
 	[SerializeField] private int rowLength; // Number of rows in HexGrid
 	[SerializeField] private int colHeight; // Number of Columns in HexGrid
-	#endregion
-	
-	
-    #region HexGrid Private Variables
+
 	private HexGridMethods hexGridMethods; // Grid methods asset to help clean code
-	public HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
-	
+	private HexTile[,] hexTileArray; // Holds reference to every tile in the HexGrid
 	private Sprite hexTileSprite; // Sprite for hexTile to get gaps
 	private float widthGap; // Horizontal spacing based on Sprite
 	private float heightGap; // Vertical spacing based on Sprite
 	#endregion
 
-	
-	
-    #region HexGrid Lifecycle
+	#region Lifecycle
 	private void Awake() 
 	{ 
 		Instance = this; 
@@ -49,17 +41,15 @@ public class HexGrid : MonoBehaviour
 		// Instance the array that will hold all the HexGrid Tiles
 		hexTileArray = new HexTile[rowLength, colHeight];
 		
-		if (GenerateTheGrid) GenerateHexGrid();
+		if (generateTheGrid) GenerateHexGrid();
 		else				 ReadInGrid();
 	}
 	#endregion
 
-
-
-    #region HexGrid Methods
+	#region Methods
 	private void GenerateHexGrid()
 	{
-		// Loop throught set Row and Column amount to generate Grid
+		// Loop through set Row and Column amount to generate Grid
 		for (int x = 0; x < rowLength; x++) 
 		{
 			for (int y = 0; y < colHeight; y++) 
@@ -113,9 +103,15 @@ public class HexGrid : MonoBehaviour
 	}
 	#endregion
 	
+	#region Helpers
+	public Vector2Int GetGridPositionFromWorld(Vector3 worldPos) => hexGridMethods.GetGridPositionFromWorld(worldPos);
 	
+	public Vector3 GetWorldPositionFromGrid(int x, int y) => hexGridMethods.GetWorldPositionFromGrid(x, y);
 	
-	#region HexGrid Accessors
+	public bool IsInvalidGridPosition(Vector2Int gridPosition) => hexGridMethods.IsInvalidGridPosition(gridPosition);
+	#endregion
+	
+	#region Accessors
 	// Grid Gap Methods
 	public float GetWidthGap() => widthGap;
 	
@@ -127,14 +123,5 @@ public class HexGrid : MonoBehaviour
 
 	// Grid Position Methods
 	public HexTile GetHexTileAtPosition(int x, int y)   => hexTileArray[x, y];
-	
-	public Vector2Int GetGridPositionFromWorld(Vector3 worldPos) => hexGridMethods.GetGridPositionFromWorld(worldPos);
-	
-	public Vector3 GetWorldPositionFromGrid(int x, int y) => hexGridMethods.GetWorldPositionFromGrid(x, y);
-	
-	public bool IsInvalidGridPosition(Vector2Int gridPosition) => hexGridMethods.IsInvalidGridPosition(gridPosition);
-	#endregion 
-	
-	
-	
+	#endregion
 } 

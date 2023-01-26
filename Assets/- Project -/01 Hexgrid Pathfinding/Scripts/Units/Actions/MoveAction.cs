@@ -1,29 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Pathfinding;
 
 public class MoveAction : MonoBehaviour
 {
-    #region MoveAction Editable Variables
+    #region Variables
 	[SerializeField] private float topSpeed; // Top speed for this ship 
-	[SerializeField] private float rotateSpeed; // Rotation speed for this ship 
 	[SerializeField] private int moveHexRange = 3; // Movement range of action on grid
-	#endregion
-	
-	
 
-    #region MoveAction Private Variables
-	private Rigidbody2D rigidBody; // Store sprite renderer for quick changeing
-	private ShipUnit shipUnit; // The ship unit attached to the same gameobject as this action
-	private ShipUnit selectedShip; // Selected Ship as dictated from the GameController
+	private Rigidbody2D rigidBody; // Store sprite renderer for quick changing
+	private ShipUnit shipUnit; // The ship unit attached to the same GameObject as this action
 	private HexTile shipTarget; // Target for this ship to move towards
 	private bool isActive; // Is this overall mov action active
 	
-	private List<GraphNode> pathNodes; // The path for the action on a node by node with no smoothing
 	private List<Vector3> pathVectors; // The path for the action on smoothed vector basis.
-	private int currentPathStep = 0;
+	private int currentPathStep;
 	
 	private Vector2 shipStart; // Location of ship start location when moving
 	private Vector2 shipEnd; // Location of ship end location when moving
@@ -37,14 +29,12 @@ public class MoveAction : MonoBehaviour
 	private float rotateTimePassed; // Timing for when move is in progress
 	private bool isRotating; // Is the ship rotating
 	
-	private List<Vector2Int> validHexPositionList; // The position list for this move action based on ship unit grid possition
+	private List<Vector2Int> validHexPositionList; // The position list for this move action based on ship unit grid position
 	
 	private Seeker seeker; // Seeker for the shipUnit to allow for pathfinding to valid hexes from position.
 	#endregion
 	
-	
-
-    #region MoveAction Lifecycle
+    #region Lifecycle
 	private void Awake() 
 	{
 		shipUnit = GetComponent<ShipUnit>();
@@ -54,9 +44,6 @@ public class MoveAction : MonoBehaviour
 
 	private void Start() 
 	{
-		// Set selected ship if there is one
-		selectedShip = GameController.Instance.GetSelectedShip();
-		
 		shipUnit.OnSelectedShipChange += ShipUnit_OnSelectedShipChange;
 		GenerateValidPositions();
 		PathToValidHexPositions();
@@ -68,23 +55,9 @@ public class MoveAction : MonoBehaviour
 		
 		HandleShipMovement(); // Handle Ship movement now that target is valid
 	}
-    
-	private void Update() 
-	{
-		if (Input.GetKeyUp(KeyCode.T))
-		{
-			List<Vector2Int> validGridPositionLsit = GetValidHexPositionList();
-			foreach (Vector2Int gridPosition in validGridPositionLsit)
-			{
-				//Debug.Log(gridPosition);
-			}
-		}
-	}
 	#endregion
-    
-    
 
-	#region MoveAction Methods
+	#region Methods
 	public void SetShipMoveTarget(HexTile clickedHexTile, Path path) 
 	{
 		// Ship has just been assign target by MouseController
@@ -93,21 +66,14 @@ public class MoveAction : MonoBehaviour
 		
 		// Assign paths to this action on movement start
 		pathVectors = path.vectorPath;
-		pathNodes = path.path;
 		
 		// Start the movement 
 		SetMovementStart();
 	}
-	
-	private void ShipUnit_OnSelectedShipChange(object sender, EventArgs empty) 
-	{
-		GenerateValidPositions();
-		PathToValidHexPositions();
-	}
-	
+
 	private void PathToValidHexPositions() 
 	{
-		// Generate multipaths for all valid hex positions
+		// Generate multi-paths for all valid hex positions
 		Vector3[] endPoints = new Vector3[validHexPositionList.Count];
 		int indexCount = 0;
 		
@@ -120,44 +86,47 @@ public class MoveAction : MonoBehaviour
 		seeker.StartMultiTargetPath(transform.position, endPoints, true, OnPathComplete);
 	}
 	
-	public void OnPathComplete (Path p) 
+	private void OnPathComplete (Path p) 
 	{
-		MultiTargetPath mp = p as MultiTargetPath;
-		List<GraphNode>[] paths = mp.nodePaths;
+		if (p is MultiTargetPath mp)
+		{
+			List<GraphNode>[] paths = mp.nodePaths;
 
-		List<int> hexPositionsToRemove = new List<int>();
-		List<Vector2Int> finalValidPositionList = new List<Vector2Int>();
-		
-		// IDRIS-TODO On Complete remove the hexes that dont meet endpoint of have too many nodes.
-		for (int i = 0; i < paths.Length; i++)
-		{
-			List<GraphNode> currentPath = paths[i];
-			if (currentPath.Count > (moveHexRange + 1)) 
-			{ 
-				hexPositionsToRemove.Add(i);
-			}
-			else if (Vector3.Distance(HexGrid.Instance.GetWorldPositionFromGrid(validHexPositionList[i].x, validHexPositionList[i].y), (Vector3)currentPath[paths[i].Count -1].position) > 0.1) 
+			List<int> hexPositionsToRemove = new List<int>();
+			List<Vector2Int> finalValidPositionList = new List<Vector2Int>();
+
+			// On Complete remove the hexes that dont meet endpoint of have too many nodes.
+			for (int i = 0; i < paths.Length; i++)
 			{
-				hexPositionsToRemove.Add(i);
+				List<GraphNode> currentPath = paths[i];
+				if (currentPath.Count > (moveHexRange + 1))
+				{
+					hexPositionsToRemove.Add(i);
+				}
+				else if (Vector3.Distance(
+					         HexGrid.Instance.GetWorldPositionFromGrid(validHexPositionList[i].x,
+						         validHexPositionList[i].y), (Vector3)currentPath[paths[i].Count - 1].position) > 0.1)
+				{
+					hexPositionsToRemove.Add(i);
+				}
 			}
-		}
-		
-		// Generate new Valid hex position grid based on the hexPositionsToRemove
-		for (int j = 0; j < validHexPositionList.Count; j++) 
-		{
-			Vector2Int validPosition = validHexPositionList[j];
-			
-			if (hexPositionsToRemove.Contains(j) ) continue;
-			else 
+
+			// Generate new Valid hex position grid based on the hexPositionsToRemove
+			for (int j = 0; j < validHexPositionList.Count; j++)
 			{
-				finalValidPositionList.Add(validPosition);
+				Vector2Int validPosition = validHexPositionList[j];
+
+				if (!hexPositionsToRemove.Contains(j))
+				{
+					finalValidPositionList.Add(validPosition);
+				}
 			}
+
+			validHexPositionList = finalValidPositionList;
 		}
-		
-		validHexPositionList = finalValidPositionList;
 	}
 	
-	private List<Vector2Int> GenerateValidPositions()
+	private void GenerateValidPositions()
 	{
 		List<Vector2Int> validPositionList = new List<Vector2Int>();
 		
@@ -193,15 +162,12 @@ public class MoveAction : MonoBehaviour
 		}
 		
 		validHexPositionList = validPositionList;
-		return validHexPositionList;
 	}
 	
 	public List<Vector2Int> GetValidHexPositionList() => validHexPositionList;
 	#endregion
 	
-	
-	
-	#region MoveAction Movement Methods
+	#region Movement Methods
 	private void SetMovementStart() 
 	{
 		// Set up duration of move by testing distance against top speed
@@ -264,10 +230,17 @@ public class MoveAction : MonoBehaviour
 		rigidBody.MovePosition(shipEnd);
 		isActive = false;
 		pathVectors = null;
-		pathNodes = null;
 		currentPathStep = 0;
 
 		if (shipTarget) shipTarget = shipTarget.ClearHexIsTarget();
+	}
+	#endregion
+	
+	#region Events
+	private void ShipUnit_OnSelectedShipChange(object sender, EventArgs empty) 
+	{
+		GenerateValidPositions();
+		PathToValidHexPositions();
 	}
 	#endregion
 }

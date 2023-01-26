@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System;
 using UnityEngine;
-
 
 public class GameController : MonoBehaviour
 {
-	#region GameController Variables
+	#region Variables
 	public static GameController Instance { get; private set; } // Singleton to allow GameController access game wide
-	
 	public event EventHandler OnHoveredHexChange;
 	public event EventHandler OnHoveredShipChange;
 	public event EventHandler OnSelectedShipChange;
@@ -19,27 +15,23 @@ public class GameController : MonoBehaviour
 	private ShipUnit selectedShip; // Selected Ship stored here to show visual
 	#endregion
 	
-	
-	
-    #region GameController Lifecycle
+	#region Lifecycle
 	private void Awake() 
 	{ 
 		Instance = this; 
 	}
-	#endregion/
+	#endregion
 	
-	
-	
-	#region GameController Accessors
+	#region Accessors
 	// Selected Tile Methods
 	public void SetSelectedHex(HexTile selectedHexTileObject) { selectedHexTile = selectedHexTileObject; }
 	
 	public HexTile GetSelectedHex() => selectedHexTile;
 	
-	public void SetHoveredHex(HexTile hoveredHextileObject) 
+	public void SetHoveredHex(HexTile hoveredHexTileObject) 
 	{ 
-		hoveredHexTile = hoveredHextileObject; 
-		OnHoveredHexChange?.Invoke(hoveredHextileObject, EventArgs.Empty);
+		hoveredHexTile = hoveredHexTileObject; 
+		OnHoveredHexChange?.Invoke(hoveredHexTileObject, EventArgs.Empty);
 	}
 	
 	public HexTile GetHoveredHex() => hoveredHexTile;
@@ -63,7 +55,4 @@ public class GameController : MonoBehaviour
 	
 	public ShipUnit GetHoveredShip() => hoveredShip;
 	#endregion
-	
-	
-	
 }

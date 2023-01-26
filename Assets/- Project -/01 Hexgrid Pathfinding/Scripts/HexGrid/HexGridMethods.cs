@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HexGridMethods : MonoBehaviour
@@ -24,14 +23,9 @@ public class HexGridMethods : MonoBehaviour
 		gridPosition.y = Mathf.RoundToInt(worldPos.y / HexGrid.Instance.GetHeightGap());
 		
 		// If Y is an odd row make sure to adjust the X back to account
-		if (gridPosition.y % 2 == 0) 
-		{ 
-			gridPosition.x = Mathf.RoundToInt(worldPos.x / HexGrid.Instance.GetWidthGap()); 
-		}
-		else 
-		{ 
-			gridPosition.x = Mathf.RoundToInt((worldPos.x / HexGrid.Instance.GetWidthGap()) - (HexGrid.Instance.GetWidthGap() / 2)); 
-		}
+		gridPosition.x = gridPosition.y % 2 == 0 ? 
+			Mathf.RoundToInt(worldPos.x / HexGrid.Instance.GetWidthGap()) 
+			: Mathf.RoundToInt((worldPos.x / HexGrid.Instance.GetWidthGap()) - (HexGrid.Instance.GetWidthGap() / 2));
 
 		// Test six neighbours of gridPosition (with oddRow check) in case its inaccurate due to hex
 		bool oddRow = gridPosition.y % 2 ==1;
