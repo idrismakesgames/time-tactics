@@ -76,10 +76,8 @@ public class MouseSystem : MonoBehaviour
 		HandClick();
 	}
 	#endregion
-	
-	
-	
-	#region MouseSystem Methods
+
+	#region  Methods
 	private void HandleHover() 
 	{
 		// If hovering over ship
@@ -132,10 +130,8 @@ public class MouseSystem : MonoBehaviour
 		}
 	}
 	#endregion
-	
-	
-	
-	#region MouseSystem Events	
+
+	#region Events	
 	private void GameController_OnHoveredHexChange(object sender, EventArgs empty) 
 	{
 		// If hovering over valid hex position list entry, generate path.
