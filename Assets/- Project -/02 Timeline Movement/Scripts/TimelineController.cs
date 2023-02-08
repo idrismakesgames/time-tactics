@@ -37,19 +37,11 @@ public class TimelineController: MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // Add in line path positions using helper method that
-            // will create extra points around start and end for better smoothing.
-            if (linePath.Count > 0)
-            {
-                linePath = TimelineHelperMethods.Instance.AddPositionWithBuffer(linePath[^1], mousePosition, linePath);
-            }
-            else
-            {
-                linePath.Add(mousePosition);
-            }
+            linePath.Add(mousePosition);
 
             // Use smoothing from A* to then create curvature
-            linePathSmoothed = TimelineHelperMethods.Instance.LineSmoothSimple(linePath);
+            linePathSmoothed = TimelineHelperMethods.Instance.LineSmoothBezier(linePath);
+            //linePathSmoothed = TimelineHelperMethods.Instance.LineSmoothSimple()(linePath);
             
             // Pass these points to line renderer.
             lineRenderer.positionCount = linePathSmoothed.Count;

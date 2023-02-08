@@ -91,27 +91,44 @@ public class TimelineHelperMethods : MonoBehaviour
 	}
     
     // Add a point to the path, but also add points along that trajectory close to start and end to help with smoothing.
-    public List<Vector3> AddPositionWithBuffer(Vector3 startPoint, Vector3 endPoint, List<Vector3> linePath)
-    {
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.01f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.02f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.04f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.07f));		
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.11f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.2f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.3f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.5f));
-		
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.7f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.8f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.89f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.93f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.96f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.98f));
-		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.99f));
-		linePath.Add(endPoint);
+    public List<Vector3> LineSmoothBezier (List<Vector3> path, int subdivisions = 4, float bezierTangentLength = 0.1f) {
+	    if (subdivisions < 0) subdivisions = 0;
 
-		return linePath;
+	    int subMult = 1 << subdivisions;
+	    List<Vector3> subdivided = new List<Vector3>();
+
+	    for (int i = 0; i < path.Count-1; i++) {
+		    Vector3 tangent1;
+		    Vector3 tangent2;
+		    if (i == 0) {
+			    tangent1 = path[i+1]-path[i];
+		    } else {
+			    tangent1 = path[i+1]-path[i-1];
+		    }
+
+		    if (i == path.Count-2) {
+			    tangent2 = path[i]-path[i+1];
+		    } else {
+			    tangent2 = path[i]-path[i+2];
+		    }
+
+		    tangent1 *= bezierTangentLength;
+		    tangent2 *= bezierTangentLength;
+
+		    Vector3 v1 = path[i];
+		    Vector3 v2 = v1+tangent1;
+		    Vector3 v4 = path[i+1];
+		    Vector3 v3 = v4+tangent2;
+
+		    for (int j = 0; j < subMult; j++) {
+			    subdivided.Add(AstarSplines.CubicBezier(v1, v2, v3, v4, (float)j/subMult));
+		    }
+	    }
+
+	    // Assign the last point
+	    subdivided.Add(path[path.Count-1]);
+
+	    return subdivided;
     }
     #endregion
 }

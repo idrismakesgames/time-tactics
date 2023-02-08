@@ -145,8 +145,8 @@ namespace Pathfinding {
 				Vector3 startVel1 = preEndVel;
 				Vector3 endVel1 = i < path.Count-2 ? ((path[i+2]-path[i+1]).normalized - (path[i]-path[i+1]).normalized).normalized : (path[i+1]-path[i]).normalized;
 
-				Vector3 startVel = startVel1 * dist * factor;
-				Vector3 endVel = endVel1 * dist * factor;
+				Vector3 startVel = startVel1 * (dist * factor);
+				Vector3 endVel = endVel1 * (dist * factor);
 
 				Vector3 start = path[i];
 				Vector3 end = path[i+1];
@@ -357,7 +357,7 @@ namespace Pathfinding {
 			}
 
 			// Assign the last point
-			subdivided.Add(path[path.Count-1]);
+			subdivided.Add(path[^1]);
 
 			return subdivided;
 		}
