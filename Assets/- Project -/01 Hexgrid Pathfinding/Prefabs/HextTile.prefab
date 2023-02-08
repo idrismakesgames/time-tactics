@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -103,6 +103,7 @@ MonoBehaviour:
   hexSprite: {fileID: 21300000, guid: bafaae007dbe8c74ea58dc85be43f44e, type: 3}
   hexSpriteHovered: {fileID: 21300000, guid: 5895269ae25d8e942837bdafa6fc0aa0, type: 3}
   hexTileGridPosition: {x: 0, y: 0}
+  isObstacle: 0
   shipUnitOnTile: {fileID: 0}
 --- !u!60 &8797851830002424163
 PolygonCollider2D:

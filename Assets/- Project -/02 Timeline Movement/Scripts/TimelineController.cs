@@ -12,6 +12,7 @@ public class TimelineController: MonoBehaviour
 
     private Vector3 mousePosition; // where is the mouse position on screen, as seen through camera
     private List<Vector3> linePath; // Path for ship to follow
+    private List<Vector3> linePathSmoothed; // Path for ship to follow smoothed
     private LineRenderer lineRenderer; // Line that will show on screen
     #endregion
 	
@@ -30,17 +31,29 @@ public class TimelineController: MonoBehaviour
     private void FixedUpdate()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1));
-        Debug.Log(" Mouse position: " + mousePosition + "/n path contents: " + linePath.Count);
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            linePath.Add(mousePosition);
-            linePath = TimelineHelperMethods.Instance.LineSmoothSimple(linePath);
-            lineRenderer.positionCount = linePath.Count;
-            lineRenderer.SetPositions(linePath.ToArray());
+            // Add in line path positions using helper method that
+            // will create extra points around start and end for better smoothing.
+            if (linePath.Count > 0)
+            {
+                linePath = TimelineHelperMethods.Instance.AddPositionWithBuffer(linePath[^1], mousePosition, linePath);
+            }
+            else
+            {
+                linePath.Add(mousePosition);
+            }
+
+            // Use smoothing from A* to then create curvature
+            linePathSmoothed = TimelineHelperMethods.Instance.LineSmoothSimple(linePath);
+            
+            // Pass these points to line renderer.
+            lineRenderer.positionCount = linePathSmoothed.Count;
+            lineRenderer.SetPositions(linePathSmoothed.ToArray());
         }
     }
 

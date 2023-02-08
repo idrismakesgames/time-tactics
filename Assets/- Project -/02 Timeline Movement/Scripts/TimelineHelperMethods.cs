@@ -16,11 +16,10 @@ public class TimelineHelperMethods : MonoBehaviour
     #endregion
     
     #region Smoothing Methods
-    
     // Simple smooth method refactored from pathfinding. apply to simple Path
     public List<Vector3> LineSmoothSimple (
-	    List<Vector3> path, bool uniformLength = true, float maxSegmentLength = 0.1f, 
-	    int subdivisions = 4, int iterations = 4, float strength = 0.5f
+	    List<Vector3> path, bool uniformLength = true, float maxSegmentLength = 0.075f, 
+	    int subdivisions = 6, int iterations = 60, float strength = 0.5f
 	    ) 
     {
 		if (path.Count < 2) return path;
@@ -90,5 +89,29 @@ public class TimelineHelperMethods : MonoBehaviour
 
 		return subdivided;
 	}
+    
+    // Add a point to the path, but also add points along that trajectory close to start and end to help with smoothing.
+    public List<Vector3> AddPositionWithBuffer(Vector3 startPoint, Vector3 endPoint, List<Vector3> linePath)
+    {
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.01f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.02f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.04f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.07f));		
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.11f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.2f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.3f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.5f));
+		
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.7f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.8f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.89f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.93f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.96f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.98f));
+		//linePath.Add(Vector3.Lerp(startPoint, endPoint, 0.99f));
+		linePath.Add(endPoint);
+
+		return linePath;
+    }
     #endregion
 }
