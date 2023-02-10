@@ -18,10 +18,10 @@ public class TimelineHelperMethods : MonoBehaviour
     #region Smoothing Methods
     // Simple smooth method refactored from pathfinding. apply to simple Path
     public List<Vector3> LineSmoothSimple (
-	    List<Vector3> path, bool uniformLength = true, float maxSegmentLength = 0.075f, 
-	    int subdivisions = 6, int iterations = 60, float strength = 0.5f
-	    ) 
-    {
+		    List<Vector3> path, bool uniformLength = true, float maxSegmentLength = 0.075f, 
+		    int subdivisions = 6, int iterations = 60, float strength = 0.5f
+		) 
+	{
 		if (path.Count < 2) return path;
 
 		List<Vector3> subdivided;
@@ -91,7 +91,10 @@ public class TimelineHelperMethods : MonoBehaviour
 	}
     
     // Add a point to the path, but also add points along that trajectory close to start and end to help with smoothing.
-    public List<Vector3> LineSmoothBezier (List<Vector3> path, int subdivisions = 4, float bezierTangentLength = 0.1f) {
+    public List<Vector3> LineSmoothBezier (
+			List<Vector3> path, int subdivisions = 4, float bezierTangentLength = 0.1f
+	    ) 
+    {
 	    if (subdivisions < 0) subdivisions = 0;
 
 	    int subMult = 1 << subdivisions;
