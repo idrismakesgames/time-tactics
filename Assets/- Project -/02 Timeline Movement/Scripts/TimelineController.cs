@@ -4,13 +4,14 @@ using System;
 
 public class TimelineController: MonoBehaviour
 {
-    #region Variables
+    #region Editable Variables
     public static TimelineController Instance { get; private set; } // Singleton to allow GameController access game wide
     public Vector3 MousePosition { get; private set; } // where is the mouse position on screen, as seen through camera
+    public float FixedFramesPerSecond { get; private set; } // where is the mouse position on screen, as seen through camera
 
     public TimelineShip SelectedShip { get; private set; }
-    public TimelineShip HoveredShip { get; set; }
-    public PivotPoint HoveredPivot { get; set; }
+    public TimelineShip HoveredShip { get; private set; }
+    public PivotPoint HoveredPivot { get; private set; }
     public PivotPoint SelectedPivot { get; set; }
 
     public event EventHandler OnSelectedShipChange;
@@ -20,6 +21,9 @@ public class TimelineController: MonoBehaviour
     private void Awake() 
     { 
         Instance = this; 
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+        FixedFramesPerSecond = 1 / Time.fixedDeltaTime;
     }
 
     private void FixedUpdate()

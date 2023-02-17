@@ -26,7 +26,7 @@ public class MouseSystem : MonoBehaviour
 	#region Lifecycle 
 	private void Awake() 
 	{ 
-		Instance = this; 
+		Instance = this;
 		validHexMovePositionList = new List<Vector2Int>();
 	}
 	

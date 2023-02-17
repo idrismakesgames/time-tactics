@@ -3,14 +3,19 @@ using System.Collections.Generic;
 
 public class PivotPoint : MonoBehaviour
 {
+    #region Editable Variables
     [SerializeField] private SpriteRenderer draggedSpriteRenderer;
     [SerializeField] private LineRenderer draggedLineRenderer;
     [SerializeField] private GameObject pivotChild;
-    
+    #endregion 
+
+    #region Variables
     private int pivotIndexOnPath;
     private TimelineShip shipParent;
     private List<Vector3> shipLinePath;
-    
+    #endregion 
+
+    #region Lifecycle Methods
     private void FixedUpdate()
     {
         if (TimelineController.Instance.SelectedPivot == this)
@@ -34,7 +39,9 @@ public class PivotPoint : MonoBehaviour
             draggedLineRenderer.SetPositions(ghostLinePath.ToArray());
         }
     }
-
+    #endregion
+    
+    #region Pivot Methods
     public void SetStartingValues(TimelineShip originShip, int pivotIndex, List<Vector3> originLinePath)
     {
         pivotIndexOnPath = pivotIndex;
@@ -61,4 +68,5 @@ public class PivotPoint : MonoBehaviour
         draggedLineRenderer.enabled = false;
         TimelineController.Instance.SelectedPivot = null;
     }
+    #endregion
 }
