@@ -1,9 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Numerics;
 using Unity.Mathematics;
-using UnityEngine.Rendering.UI;
 using Vector3 = UnityEngine.Vector3;
 
 public class TimelineShip : MonoBehaviour
@@ -55,6 +53,7 @@ public class TimelineShip : MonoBehaviour
         pivotPointInstance.SetStartingValues(this, linePath.Count-1, linePath);
         FeedPathToLineRenderer();
     }
+    
     private void FeedPathToLineRenderer()
     {
         // Use smoothing from A* to then create curvature
@@ -75,33 +74,37 @@ public class TimelineShip : MonoBehaviour
     #region TimelineShip Action Methods
     private void BuildShipActionList()
     {
-        // TODO create Timeline Array frame by frame based on path.
-        
-        // TODO loop through each linePath entry
-        
-        // Example of frame 1
         // Based on frame rate per second and time to mac. calculate curve time factor
-        float curveTimeFactor = TimelineController.Instance.FixedFramesPerSecond * timeToMaxSpeed;
-        // Then divide current frame to save by this factor, to give curve position
-        float curvePosition = 2 / curveTimeFactor;
-        // Run this position through the animation curve;
-        float finalCurvePosition = accelerationCurve.Evaluate(curvePosition);
-        // Get final distance to move by multiplying this by the distance to max speed.
-        float distanceMovedOnThisFrame = finalCurvePosition * distanceToMaxSpeed;
-       
-
-        float minDistance = 99;
-        for (int i = 1; i < linePathSmoothed.Count; i++)
+        int curveTimeFactor = Mathf.RoundToInt(TimelineController.Instance.FixedFramesPerSecond * timeToMaxSpeed);
+        for (int i = 0; i < curveTimeFactor; i++)
         {
-            float distanceBetweenThisAndLast = Vector3.Distance(linePathSmoothed[i], linePathSmoothed[i - 1]);
-            if (distanceBetweenThisAndLast < minDistance)
-                minDistance = distanceBetweenThisAndLast;
-        }
-        
-        // TODO go through smooth path and move towards each point per frame based on distance,
-        // TODO THEN check that if a point if lower than distance, average position out between 2/3/4 points
-        // TODO FINALLY and move towards that position 
+            if (i == 0)
+            {
+                shipActionsList.Add(new TimelineShipAction(linePath[0], 0, this));
+            }
+            else
+            {
+                // Then divide current frame to save by this factor, to give curve position
+                float curvePosition = i / (float)curveTimeFactor;
+                // Run this position through the animation curve;
+                float finalCurvePosition = accelerationCurve.Evaluate(curvePosition);
+                // Get final distance to move by multiplying this by the distance to max speed.
+                float distanceMoved = finalCurvePosition * distanceToMaxSpeed;
 
+                // TODO Deal with Curved Points on Smoothed Path
+                // TODO Deal with after acceleration
+                // TODO Deal with deceleration
+                
+                // Use final direction and move towards it
+                Vector3 nextPathNode = linePath[1];
+                Vector3 dir = nextPathNode - shipActionsList[i-1].Position;
+                dir = Vector3.ClampMagnitude(dir, distanceMoved - shipActionsList[i - 1].DistanceFromStart);
+                Vector3 newShipPosition = shipActionsList[i-1].Position + dir;
+                shipActionsList.Add(new TimelineShipAction(
+                    newShipPosition, distanceMoved, this));
+            }
+        }
+        Debug.Log(shipActionsList.Count + " " + shipActionsList[^1].DistanceFromStart);
     }
     #endregion
     
@@ -112,6 +115,7 @@ public class TimelineShip : MonoBehaviour
         if (linePath.Count == 0)
         {
             Vector3 position = transform.position;
+            linePath.Add(new Vector3(position.x, position.y + 0.01f, -9));
             linePath.Add(new Vector3(position.x + 0.5f, position.y + 0.01f, -9));
         }
     }

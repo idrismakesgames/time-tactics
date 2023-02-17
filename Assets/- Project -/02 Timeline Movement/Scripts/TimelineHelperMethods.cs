@@ -129,9 +129,27 @@ public class TimelineHelperMethods : MonoBehaviour
 	    }
 
 	    // Assign the last point
-	    subdivided.Add(path[path.Count-1]);
+	    subdivided.Add(path[^1]);
 
 	    return subdivided;
+    }
+    
+    private Vector3 CentrePointFromVector3Array(List<Vector3> vectorList)
+    {
+	    var totalX = 0f;
+	    var totalY = 0f;
+	    var totalZ = 0f;
+	    foreach(var vector in vectorList)
+	    {
+		    totalX += vector.x;
+		    totalY += vector.y;
+		    totalZ += vector.z;
+	    }
+	    var centerX = totalX / vectorList.Count;
+	    var centerY = totalY / vectorList.Count;
+	    var centerZ = totalZ / vectorList.Count;
+
+	    return new Vector3(centerX, centerY, centerZ);
     }
     #endregion
 }
