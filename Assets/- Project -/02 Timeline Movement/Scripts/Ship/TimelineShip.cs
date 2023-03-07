@@ -12,6 +12,7 @@ public class TimelineShip : MonoBehaviour
     [SerializeField] private float distanceToMaxSpeed;
     [SerializeField] private float timeToMaxSpeed;
     [SerializeField] private AnimationCurve accelerationCurve;
+    [SerializeField] private GameObject positionMark;
     #endregion 
     
     #region  Variables
@@ -74,10 +75,11 @@ public class TimelineShip : MonoBehaviour
     #region TimelineShip Action Methods
     private void BuildShipActionList()
     {
+        shipActionsList.Clear();
         // Based on frame rate per second and time to mac. calculate curve time factor
         int curveTimeFactor = Mathf.RoundToInt(TimelineController.Instance.FixedFramesPerSecond * timeToMaxSpeed);
         int currentWaypoint = 0;
-        for (int i = 0; i < curveTimeFactor; i++)
+        for (int i = 0; i <= curveTimeFactor; i++)
         {
             if (i == 0)
             {
@@ -141,7 +143,11 @@ public class TimelineShip : MonoBehaviour
                     thisFrameShipPosition + finalDir, distanceMoved, this));
             }
             // TODO Visualise the action list on the screen for debug purposes.
-            Debug.Log("ACTION LIST COUNT " + shipActionsList.Count + " DIST:  " + shipActionsList[^1].DistanceFromStart + " WAYPOINT:  " + currentWaypoint + " LINE PATH COUNT: " + linePathSmoothed.Count);
+            foreach (TimelineShipAction shipAction in shipActionsList)
+            {
+                Instantiate(positionMark, shipAction.Position, quaternion.identity);
+            }
+            
         }
   
     }
